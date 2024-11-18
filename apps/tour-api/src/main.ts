@@ -1,8 +1,32 @@
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { TourApiModule } from './tour-api.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { ApiModule } from './api.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(TourApiModule);
-  await app.listen(process.env.port ?? 3000);
+  const app: NestExpressApplication = await NestFactory.create(ApiModule);
+  const config: ConfigService = app.get(ConfigService);
+  const port: number = config.get<number>('PORT');
+
+  app.set('trust proxy', 1);
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+  const configSwagger = new DocumentBuilder()
+    .setTitle('Admin Api Service')
+    .setDescription('API for Admin data CRUD')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .addServer(`http://localhost:${port}`)
+    .build();
+  const document = SwaggerModule.createDocument(app, configSwagger);
+  SwaggerModule.setup('api-docs', app, document);
+
+  await app.listen(port, () => {
+    console.log('[REST]', `http://localhost:${port}`);
+  });
 }
+
 bootstrap();

@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TourApiController } from './api/tour-package/tour_package.controller';
-import { TourApiService } from './api/tour-package/tourpackage.service';
+import { TourPackageController } from './api/tour-package/tour_package.controller';
+import { TourPackageService } from './api/tour-package/tourpackage.service';
 
 describe('TourApiController', () => {
-  let tourApiController: TourApiController;
+  let tourApiController: TourPackageController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [TourApiController],
-      providers: [TourApiService],
+      controllers: [TourPackageController],
+      providers: [TourPackageService],
     }).compile();
 
-    tourApiController = app.get<TourApiController>(TourApiController);
+    tourApiController = app.get<TourPackageController>(TourPackageController);
   });
 
   describe('root', () => {

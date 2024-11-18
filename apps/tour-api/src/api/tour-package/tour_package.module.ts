@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TourApiController } from './tour_package.controller';
-import { TourApiService } from './tourpackage.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TourPackage } from 'libs/entities';
+import { TourPackageController } from './tour_package.controller';
+import { TourPackageService } from './tourpackage.service';
 
 @Module({
-  imports: [],
-  controllers: [TourApiController],
-  providers: [TourApiService],
+  imports: [TypeOrmModule.forFeature([TourPackage])],
+  controllers: [TourPackageController],
+  exports: [TourPackageService],
+  providers: [],
 })
-export class TourApiModule {}
+export class TourPackageModule {}
