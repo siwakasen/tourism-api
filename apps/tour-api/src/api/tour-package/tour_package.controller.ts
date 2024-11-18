@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { TourApiService } from './tourpackage.service';
+import { TourPackageService } from './tourpackage.service';
 
 @Controller()
-export class TourApiController {
-  constructor(private readonly tourApiService: TourApiService) {}
+export class TourPackageController {
+  constructor(private readonly tourApiService: TourPackageService) {}
 
   @Get()
   getHello(): string {

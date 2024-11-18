@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class TourApiService {
+export class TourPackageService {
   getHello(): string {
     return 'Hello World!';
   }
