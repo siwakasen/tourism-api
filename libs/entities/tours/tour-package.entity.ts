@@ -36,8 +36,8 @@ export class TourPackage {
     example:
       '["https://example.com/image1.jpg", "https://example.com/image2.jpg"]',
   })
-  @Column({ type: 'json', nullable: true })
-  images: string[];
+  @Column({ type: 'text', nullable: true })
+  images: string;
 
   @ApiProperty({
     description: 'The price of the tour package in USD',
@@ -80,30 +80,30 @@ export class TourPackage {
     example:
       '[{"day": 1, "activity": "Visit Ubud Forest"}, {"day": 2, "activity": "Relax at Kuta Beach"}]',
   })
-  @Column({ type: 'json', nullable: true })
-  itineraries: Record<string, any>[];
+  @Column({ type: 'text', nullable: true })
+  itineraries: string;
 
   @ApiProperty({
     description: 'The list of items included in the tour package',
     example: '["Hotel", "Meals", "Guided Tours"]',
   })
-  @Column({ type: 'json', nullable: true })
-  includes: string[];
+  @Column({ type: 'text', nullable: true })
+  includes: string;
 
   @ApiProperty({
     description: 'The areas where pickup is available',
     example: '["Denpasar", "Ubud", "Kuta"]',
   })
-  @Column({ type: 'json', nullable: true })
-  pickup_areas: string[];
+  @Column({ type: 'text', nullable: true })
+  pickup_areas: string;
 
   @ApiProperty({
     description: 'Terms and conditions for the tour package',
     example:
       '{"cancellation_policy": "Non-refundable", "payment": "Full payment required"}',
   })
-  @Column({ type: 'json', nullable: true })
-  terms_conditions: Record<string, any>;
+  @Column({ type: 'text', nullable: true })
+  terms_conditions: string;
 
   @ApiProperty({
     description: 'Status of the tour package (active/inactive)',
