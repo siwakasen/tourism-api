@@ -7,7 +7,7 @@ import { PaginationDto } from './tour-package.dto';
 @Controller('/tour-package')
 export class TourPackageController {
   @Inject(TourPackageService)
-  private readonly tourApiService: TourPackageService
+  private readonly tourApiService: TourPackageService;
   @ApiResponse({
     status: 200,
     description: 'Successfuly get data tour package',
