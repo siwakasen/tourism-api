@@ -1,1 +1,1 @@
-export * from './tours/tour_package.entity';
+export * from './tours/tour-package.entity';
