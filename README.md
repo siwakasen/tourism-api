@@ -26,38 +26,74 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Prerequisites
+### 1.  [Node.js](https://nodejs.org/) runtime environtment
+### 2.  [pnpm](https://pnpm.io/installation)
+    npm i -g pnpm
+### 3. PostgreSQL
+#### Use your local machine as the host:
+```bash
+
+```
+
+####Use docker & docker-compose (optional)
+1. Follow docker installation [here](https://docs.docker.com/get-started/get-docker/) base on your system.
+2. After installation, make sure if docker and docker-compose are installed
+   ```bash
+   docker -v
+   docker-compose -v
+   ```
+
+
 ## Project setup
 
 ```bash
-$ pnpm install
+ pnpm install
 ```
 
+## Database Setup
+#### PSQL on host machine:
+```bash
+
+```
+#### PSQL using docker compose:
+```bash
+ docker compose up -d
+```
+if u done using it:
+```bash
+ docker compose down
+```
 ## Compile and run the project
 
 ```bash
 # development
-$ pnpm run start
+ pnpm start:tour-api:dev
 
 # watch mode
-$ pnpm run start:dev
+ pnpm start:tour-api:staging
 
 # production mode
-$ pnpm run start:prod
+ pnpm run start:prod
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ pnpm run test
+ pnpm run test
 
 # e2e tests
-$ pnpm run test:e2e
+ pnpm run test:e2e
 
 # test coverage
-$ pnpm run test:cov
+ pnpm run test:cov
 ```
-
+## Build app
+```bash
+# build dist
+pnpm build:tour-api
+```
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
@@ -65,8 +101,8 @@ When you're ready to deploy your NestJS application to production, there are som
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
 ```bash
-$ pnpm install -g mau
-$ mau deploy
+ pnpm install -g mau
+ mau deploy
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
@@ -99,7 +135,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 
-## STRUKTUR FOLDER 
+## STRUKTUR FOLDER
 ```
 apps/
 └── tour-api/
