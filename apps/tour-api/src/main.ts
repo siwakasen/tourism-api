@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ApiModule } from './api.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import { FormatErrorInterceptor } from 'libs/helper/interceptors/exeption.interceptor';
 
 async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(ApiModule);
@@ -13,6 +14,7 @@ async function bootstrap() {
   app.set('trust proxy', 1);
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  //   app.useGlobalInterceptors(new FormatErrorInterceptor());
 
   const configSwagger = new DocumentBuilder()
     .setTitle('Admin Api Service')
