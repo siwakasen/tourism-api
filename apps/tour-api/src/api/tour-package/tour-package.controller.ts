@@ -9,6 +9,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadedFiles } from '@nestjs/common';
@@ -105,5 +106,14 @@ export class TourPackageController {
     @Body() body: updateTourPackageDto,
   ) {
     return await this.tourApiService.updateTourPackage(id, body);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly delete data tour package',
+  })
+  @Delete('/:id')
+  public async deleteTourPackage(@Param('id') id: string) {
+    return await this.tourApiService.deleteTourPackage(id);
   }
 }

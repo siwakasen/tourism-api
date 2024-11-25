@@ -214,4 +214,48 @@ export class TourPackageService {
       await queryRunner.release();
     }
   }
+
+  public async deleteTourPackage(id: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const tourPackage: TourPackage = await this.repository.findOneBy({ id });
+
+      if (!tourPackage) {
+        throw new Error('Tour package not found');
+      }
+
+      await queryRunner.manager.softDelete(TourPackage, id);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: tourPackage,
+        message: 'Tour package deleted successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }
