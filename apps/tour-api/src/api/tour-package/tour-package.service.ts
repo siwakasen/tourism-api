@@ -2,7 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TourPackage } from 'libs/entities';
 import { Repository, DataSource } from 'typeorm';
-import { PaginationDto, CreateTourPackageDto } from './tour-package.dto';
+import {
+  PaginationDto,
+  CreateTourPackageDto,
+  updateStatusDto,
+} from './tour-package.dto';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,44 +20,89 @@ export class TourPackageService {
   }
 
   public async getAllTourPackage(paginationDto: PaginationDto) {
-    const { page = 1, limit = 10, search = '' } = paginationDto;
-    const queryBuilder = this.repository
-      .createQueryBuilder('tour_packages')
-      .orderBy('tour_packages.created_at', 'DESC');
+    try {
+      const { page = 1, limit = 10, search = '' } = paginationDto;
+      const queryBuilder = this.repository
+        .createQueryBuilder('tour_packages')
+        .orderBy('tour_packages.created_at', 'DESC');
 
-    // Mengelompokkan kondisi pencarian
-    const conditions = [];
-    const parameters: Record<string, any> = {};
+      // Mengelompokkan kondisi pencarian
+      const conditions = [];
+      const parameters: Record<string, any> = {};
 
-    if (search) {
-      conditions.push('tour_packages.package_name LIKE :search');
-      parameters['search'] = `%${search}%`;
+      if (search) {
+        conditions.push('tour_packages.package_name LIKE :search');
+        parameters['search'] = `%${search}%`;
+      }
+
+      // Menggabungkan semua kondisi jika ada
+      if (conditions.length) {
+        queryBuilder.where(conditions.join(' AND '), parameters);
+      }
+
+      const [result, total] = await queryBuilder
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getManyAndCount();
+
+      const totalPages = Math.ceil(total / limit);
+      const hasNextPage = page < totalPages;
+
+      return {
+        data: result,
+        meta: {
+          totalItems: total,
+          currentPage: page,
+          totalPages,
+          limit,
+          hasNextPage,
+          hasPrevPage: page > 1,
+        },
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
+  }
 
-    // Menggabungkan semua kondisi jika ada
-    if (conditions.length) {
-      queryBuilder.where(conditions.join(' AND '), parameters);
+  public async getTourPackageById(id: string) {
+    try {
+      const tourPackage: TourPackage = await this.repository.findOneBy({ id });
+
+      if (!tourPackage) {
+        throw new Error('Tour package not found');
+      }
+
+      return {
+        data: tourPackage,
+        message: 'Successfully get data tour package by id',
+      };
+    } catch (error) {
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    const [result, total] = await queryBuilder
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
-
-    const totalPages = Math.ceil(total / limit);
-    const hasNextPage = page < totalPages;
-
-    return {
-      data: result,
-      meta: {
-        totalItems: total,
-        currentPage: page,
-        totalPages,
-        limit,
-        hasNextPage,
-        hasPrevPage: page > 1,
-      },
-    };
   }
 
   public async createTourPackage(payload: CreateTourPackageDto) {
@@ -233,6 +282,51 @@ export class TourPackageService {
       return {
         data: tourPackage,
         message: 'Tour package deleted successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async updateTourPackageStatus(id: string, payload: updateStatusDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const tourPackage: TourPackage = await this.repository.findOneBy({ id });
+
+      if (!tourPackage) {
+        throw new Error('Tour package not found');
+      }
+
+      tourPackage.status = payload.status;
+      await queryRunner.manager.save(tourPackage);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: tourPackage,
+        message: 'Tour package status updated successfully',
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();

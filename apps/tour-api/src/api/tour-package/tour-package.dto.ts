@@ -119,7 +119,9 @@ export class updateTourPackageDto {
   @ApiProperty()
   @IsArray()
   public readonly terms_conditions: string[];
+}
 
+export class updateStatusDto {
   @ApiProperty()
   @IsOptional()
   @IsBoolean()

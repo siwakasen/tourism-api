@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadedFiles } from '@nestjs/common';
@@ -21,6 +22,7 @@ import {
   CreateTourPackageDto,
   UploadImagesDto,
   updateTourPackageDto,
+  updateStatusDto,
 } from './tour-package.dto';
 import { diskStorage } from 'multer';
 
@@ -40,6 +42,14 @@ export class TourPackageController {
   @Get('')
   public async getTourPackage(@Query() query: PaginationDto) {
     return await this.tourApiService.getAllTourPackage(query);
+  }
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly get data tour package by id',
+  })
+  @Get('/:id')
+  public async getTourPackageById(@Param('id') id: string) {
+    return await this.tourApiService.getTourPackageById(id);
   }
 
   @ApiResponse({
@@ -106,6 +116,17 @@ export class TourPackageController {
     @Body() body: updateTourPackageDto,
   ) {
     return await this.tourApiService.updateTourPackage(id, body);
+  }
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly update data tour package status',
+  })
+  @Patch('/status/:id')
+  public async updateTourPackageStatus(
+    @Param('id') id: string,
+    @Body() body: updateStatusDto,
+  ) {
+    return await this.tourApiService.updateTourPackageStatus(id, body);
   }
 
   @ApiResponse({
