@@ -10,12 +10,12 @@ import {
 
 //set up pagination + filter untuk fetch data staff
 export class PaginationDto {
-  @ApiProperty()
+  @ApiProperty({ default: 1 })
   @IsNumber()
   @Type(() => Number)
   public readonly page: number;
 
-  @ApiProperty()
+  @ApiProperty({ default: 10 })
   @IsNumber()
   @Type(() => Number)
   public readonly limit: number;
