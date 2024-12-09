@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Brands } from './brands.entity';
 
@@ -25,8 +26,10 @@ export class Cars {
   })
   @ManyToOne(() => Brands, (brand) => brand.id, {
     onDelete: 'CASCADE',
+    nullable: false,
   })
-  brand_id: string;
+  @JoinColumn({ name: 'brand_id' })
+  brand: Brands;
 
   @ApiProperty({
     description: 'The name of the car',
@@ -39,7 +42,7 @@ export class Cars {
     description: 'The image of the car',
     example: 'Toyota Corolla',
   })
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   car_image: string;
 
   @ApiProperty({
@@ -68,7 +71,7 @@ export class Cars {
     example: 1500,
   })
   @Column({ type: 'int' })
-  car_price: number;
+  price: number;
 
   @ApiProperty({
     description: 'The transmission of the car',
