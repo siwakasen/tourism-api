@@ -11,6 +11,9 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/helper`);
 console.log('envFilePath:', getEnvPath(`${__dirname}`));
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Membuat config tersedia secara global
+    }),
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     TourPackageModule,
