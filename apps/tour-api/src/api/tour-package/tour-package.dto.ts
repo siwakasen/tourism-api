@@ -37,6 +37,21 @@ export class UploadImagesDto {
   @IsArray()
   public readonly images: any[];
 }
+
+export class updateThumbnailDto {
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Image to be uploaded',
+  })
+  public readonly image: any;
+}
+
+export class DeleteImagesDto {
+  @ApiProperty()
+  @IsString()
+  public readonly imagePath: string;
+}
 export class CreateTourPackageDto {
   @ApiProperty()
   @IsString()
