@@ -52,49 +52,7 @@ export class DeleteImagesDto {
   @IsString()
   public readonly imagePath: string;
 }
-export class CreateTourPackageDto {
-  @ApiProperty()
-  @IsString()
-  public readonly package_name: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly description: string;
-
-  @ApiProperty()
-  @IsNumber()
-  public readonly package_price: number;
-
-  @ApiProperty()
-  @IsNumber()
-  public readonly duration: number;
-
-  @ApiProperty()
-  @IsNumber()
-  public readonly max_group_size: number;
-
-  @ApiProperty()
-  @IsNumber()
-  public readonly children_price: number;
-
-  @ApiProperty()
-  @IsArray()
-  public readonly itineraries: string[];
-
-  @ApiProperty()
-  @IsArray()
-  public readonly includes: string[];
-
-  @ApiProperty()
-  @IsArray()
-  public readonly pickup_areas: string[];
-
-  @ApiProperty()
-  @IsArray()
-  public readonly terms_conditions: string[];
-}
-
-export class updateTourPackageDto {
+export class CreateUpdateTourPackageDto {
   @ApiProperty()
   @IsString()
   public readonly package_name: string;
@@ -138,7 +96,6 @@ export class updateTourPackageDto {
 
 export class updateStatusDto {
   @ApiProperty()
-  @IsOptional()
   @IsBoolean()
   public readonly status: boolean;
 }

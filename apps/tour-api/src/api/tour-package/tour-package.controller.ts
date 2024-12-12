@@ -19,9 +19,8 @@ import { TourPackageService } from './tour-package.service';
 import { ApiResponse, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import {
   PaginationDto,
-  CreateTourPackageDto,
+  CreateUpdateTourPackageDto,
   UploadImagesDto,
-  updateTourPackageDto,
   updateStatusDto,
   DeleteImagesDto,
 } from './tour-package.dto';
@@ -58,7 +57,7 @@ export class TourPackageController {
     description: 'Successfuly create data tour package',
   })
   @Post('')
-  public async createTourPackage(@Body() body: CreateTourPackageDto) {
+  public async createTourPackage(@Body() body: CreateUpdateTourPackageDto) {
     return await this.tourApiService.createTourPackage(body);
   }
 
@@ -114,58 +113,6 @@ export class TourPackageController {
     return await this.tourApiService.uploadImages(id, files);
   }
 
-  //   @ApiResponse({
-  //     status: 200,
-  //     description: 'Successfully uploaded tour package thumbnail',
-  //   })
-  //   @ApiConsumes('multipart/form-data')
-  //   @UseInterceptors(
-  //     FileInterceptor('image', {
-  //       storage: diskStorage({
-  //         destination: './apps/tour-api/public/tour-images',
-  //         filename: (req, file, cb) => {
-  //           const uniqueSuffix =
-  //             Date.now() + '-' + Math.round(Math.random() * 1e9);
-  //           cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
-  //         },
-  //       }),
-  //       fileFilter: (req, file, cb) => {
-  //         // Validate file type
-  //         if (!file.mimetype.startsWith('image/')) {
-  //           return cb(
-  //             new HttpException(
-  //               {
-  //                 message: ['Invalid file type. Only images are allowed.'],
-  //                 error: 'Not Acceptable',
-  //                 statusCode: HttpStatus.NOT_ACCEPTABLE,
-  //               },
-  //               HttpStatus.NOT_ACCEPTABLE,
-  //             ),
-  //             false,
-  //           );
-  //         }
-  //         cb(null, true); // Accept the file if valid
-  //       },
-  //     }),
-  //   )
-  //   @Post('update-thumbnail/:id')
-  //   @ApiBody({
-  //     type: updateThumbnailDto,
-  //   })
-  //   public async uploadThumbnail(
-  //     @Param('id') id: string,
-  //     @UploadedFile() file: Express.Multer.File,
-  //   ) {
-  //     if (!file) {
-  //       return {
-  //         message: 'Please upload an image',
-  //         error: 'Bad Request',
-  //         statusCode: HttpStatus.BAD_REQUEST,
-  //       };
-  //     }
-  //     return await this.tourApiService.updateThumbnail(id, file);
-  //   }
-
   @Delete('delete-images/:id')
   @ApiResponse({
     status: 200,
@@ -188,7 +135,7 @@ export class TourPackageController {
   @Put('/:id')
   public async updateTourPackage(
     @Param('id') id: string,
-    @Body() body: updateTourPackageDto,
+    @Body() body: CreateUpdateTourPackageDto,
   ) {
     return await this.tourApiService.updateTourPackage(id, body);
   }

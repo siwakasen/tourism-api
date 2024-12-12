@@ -34,7 +34,7 @@ export class UploadImageDto {
   public readonly image: any;
 }
 
-export class CreateCarsDto {
+export class CreateUpdateCarsDto {
   @ApiProperty()
   @IsString()
   public readonly car_name: string;
@@ -66,7 +66,6 @@ export class CreateCarsDto {
 
 export class updateStatusDto {
   @ApiProperty()
-  @IsOptional()
   @IsBoolean()
   public readonly status: boolean;
 }

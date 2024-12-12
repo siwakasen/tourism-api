@@ -4,7 +4,7 @@ import { TourPackage } from 'libs/entities';
 import { Repository, DataSource } from 'typeorm';
 import {
   PaginationDto,
-  CreateTourPackageDto,
+  CreateUpdateTourPackageDto,
   updateStatusDto,
 } from './tour-package.dto';
 import * as fs from 'fs';
@@ -105,7 +105,7 @@ export class TourPackageService {
     }
   }
 
-  public async createTourPackage(payload: CreateTourPackageDto) {
+  public async createTourPackage(payload: CreateUpdateTourPackageDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -199,69 +199,69 @@ export class TourPackageService {
     }
   }
 
-  //   public async updateThumbnail(id: string, file: Express.Multer.File) {
-  //     const queryRunner = this.dataSource.createQueryRunner();
-  //     await queryRunner.connect();
-  //     await queryRunner.startTransaction();
+  public async updateThumbnail(id: string, file: Express.Multer.File) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-  //     try {
-  //       const tourPackage: TourPackage = await this.repository.findOneBy({ id });
+    try {
+      const tourPackage: TourPackage = await this.repository.findOneBy({ id });
 
-  //       if (!tourPackage) {
-  //         throw new Error('Tour package not found');
-  //       }
+      if (!tourPackage) {
+        throw new Error('Tour package not found');
+      }
 
-  //       const filePath = path.join(
-  //         './apps/tour-api/public/tour-images',
-  //         tourPackage.images[0],
-  //       );
-  //       const distPath = path.join(
-  //         './dist/apps/tour-api/public/tour-images',
-  //         tourPackage.images[0],
-  //       );
-  //       if (fs.existsSync(filePath)) {
-  //         fs.unlinkSync(filePath);
-  //         console.log(`Deleted storage image: ${filePath}`);
-  //       }
-  //       if (fs.existsSync(distPath)) {
-  //         fs.unlinkSync(distPath);
-  //         console.log(`Deleted public image: ${distPath}`);
-  //       }
-  //       tourPackage.images[0] = file.filename;
+      const filePath = path.join(
+        './apps/tour-api/public/tour-images',
+        tourPackage.images[0],
+      );
+      const distPath = path.join(
+        './dist/apps/tour-api/public/tour-images',
+        tourPackage.images[0],
+      );
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted storage image: ${filePath}`);
+      }
+      if (fs.existsSync(distPath)) {
+        fs.unlinkSync(distPath);
+        console.log(`Deleted public image: ${distPath}`);
+      }
+      tourPackage.images[0] = file.filename;
 
-  //       await queryRunner.manager.save(tourPackage);
+      await queryRunner.manager.save(tourPackage);
 
-  //       await queryRunner.commitTransaction();
-  //       return {
-  //         data: tourPackage,
-  //         message: 'Thumbnail updated successfully',
-  //       };
-  //     } catch (error) {
-  //       await queryRunner.rollbackTransaction();
+      await queryRunner.commitTransaction();
+      return {
+        data: tourPackage,
+        message: 'Thumbnail updated successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
 
-  //       if (error.message === 'Tour package not found') {
-  //         throw new HttpException(
-  //           {
-  //             message: ['Tour package not found'],
-  //             error: 'Not Found',
-  //             statusCode: HttpStatus.NOT_FOUND,
-  //           },
-  //           HttpStatus.NOT_FOUND,
-  //         );
-  //       }
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-  //       throw new HttpException(
-  //         {
-  //           message: [error.message || 'Internal Server Error'],
-  //           error: 'Internal Server Error',
-  //           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-  //         },
-  //         HttpStatus.INTERNAL_SERVER_ERROR,
-  //       );
-  //     } finally {
-  //       await queryRunner.release();
-  //     }
-  //   }
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
 
   public async deleteImage(id: string, imagePath: string) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -337,7 +337,10 @@ export class TourPackageService {
     }
   }
 
-  public async updateTourPackage(id: string, payload: CreateTourPackageDto) {
+  public async updateTourPackage(
+    id: string,
+    payload: CreateUpdateTourPackageDto,
+  ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
