@@ -28,7 +28,7 @@ export class CarsService {
       const conditions = [];
       const parameters: Record<string, any> = {};
       if (search) {
-        conditions.push(`cars.car_name LIKE :search`);
+        conditions.push(`cars.car_name ILIKE :search`);
         parameters['search'] = `%${search}%`;
       }
 

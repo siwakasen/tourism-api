@@ -31,7 +31,7 @@ export class TourPackageService {
       const parameters: Record<string, any> = {};
 
       if (search) {
-        conditions.push('tour_packages.package_name LIKE :search');
+        conditions.push('tour_packages.package_name ILIKE :search');
         parameters['search'] = `%${search}%`;
       }
 
