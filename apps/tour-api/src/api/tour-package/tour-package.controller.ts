@@ -19,10 +19,10 @@ import { TourPackageService } from './tour-package.service';
 import { ApiResponse, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import {
   PaginationDto,
-  CreateTourPackageDto,
+  CreateUpdateTourPackageDto,
   UploadImagesDto,
-  updateTourPackageDto,
   updateStatusDto,
+  DeleteImagesDto,
 } from './tour-package.dto';
 import { diskStorage } from 'multer';
 
@@ -57,7 +57,7 @@ export class TourPackageController {
     description: 'Successfuly create data tour package',
   })
   @Post('')
-  public async createTourPackage(@Body() body: CreateTourPackageDto) {
+  public async createTourPackage(@Body() body: CreateUpdateTourPackageDto) {
     return await this.tourApiService.createTourPackage(body);
   }
 
@@ -69,11 +69,11 @@ export class TourPackageController {
   @UseInterceptors(
     FilesInterceptor('images', 20, {
       storage: diskStorage({
-        destination: './uploads/tour-images', // Directory to save files
+        destination: './apps/tour-api/public/tour-images',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg'); // Adjust extension as needed
+          cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
         },
       }),
       fileFilter: (req, file, cb) => {
@@ -103,7 +103,29 @@ export class TourPackageController {
     @Param('id') id: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    if (files.length < 1) {
+      return {
+        message: 'Please upload at least one image',
+        error: 'Bad Request',
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+    }
     return await this.tourApiService.uploadImages(id, files);
+  }
+
+  @Delete('delete-images/:id')
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully deleted tour package images',
+  })
+  @ApiBody({
+    type: DeleteImagesDto,
+  })
+  public async deleteImage(
+    @Param('id') id: string,
+    @Body() body: DeleteImagesDto,
+  ) {
+    return await this.tourApiService.deleteImage(id, body.imagePath);
   }
 
   @ApiResponse({
@@ -113,7 +135,7 @@ export class TourPackageController {
   @Put('/:id')
   public async updateTourPackage(
     @Param('id') id: string,
-    @Body() body: updateTourPackageDto,
+    @Body() body: CreateUpdateTourPackageDto,
   ) {
     return await this.tourApiService.updateTourPackage(id, body);
   }

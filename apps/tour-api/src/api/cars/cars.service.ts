@@ -2,7 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Cars } from 'libs/entities';
-import { PaginationDto, CreateCarsDto } from './cars.dto';
+import {
+  PaginationDto,
+  CreateUpdateCarsDto,
+  updateStatusDto,
+} from './cars.dto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class CarsService {
@@ -22,7 +28,7 @@ export class CarsService {
       const conditions = [];
       const parameters: Record<string, any> = {};
       if (search) {
-        conditions.push(`cars.car_name LIKE :search`);
+        conditions.push(`cars.car_name ILIKE :search`);
         parameters['search'] = `%${search}%`;
       }
 
@@ -61,7 +67,41 @@ export class CarsService {
     }
   }
 
-  public async createCar(payload: CreateCarsDto) {
+  public async getCarById(id: string) {
+    try {
+      const car: Cars = await this.repository.findOneBy({ id });
+
+      if (!car) {
+        throw new Error('Car not found');
+      }
+
+      return {
+        data: car,
+        message: 'Successfully get data car by id',
+      };
+    } catch (error) {
+      if (error.message === 'Car not found') {
+        throw new HttpException(
+          {
+            message: ['Car not found'],
+            error: 'Car not found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to fetch car'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  public async createCar(payload: CreateUpdateCarsDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -108,6 +148,226 @@ export class CarsService {
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async uploadImage(id: string, image: Express.Multer.File) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const car: Cars = await this.repository.findOneBy({ id });
+
+      if (!car) {
+        throw new Error('Car not found');
+      }
+      if (car.car_image) {
+        const filePath = path.join(
+          './apps/tour-api/public/car-images',
+          car.car_image,
+        );
+        const distPath = path.join(
+          './dist/apps/tour-api/public/car-images',
+          car.car_image,
+        );
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log(`Deleted storage image: ${filePath}`);
+        }
+        if (fs.existsSync(distPath)) {
+          fs.unlinkSync(distPath);
+          console.log(`Deleted public image: ${distPath}`);
+        }
+      }
+      car.car_image = image.filename;
+      await queryRunner.manager.save(car);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: car,
+        message: 'Image uploaded successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      if (error.message === 'Car not found') {
+        throw new HttpException(
+          {
+            message: ['Car not found'],
+            error: 'Car not found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to upload image'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async updateCar(id: string, payload: CreateUpdateCarsDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const car: Cars = await this.repository.findOneBy({ id });
+
+      if (!car) {
+        throw new Error('Car not found');
+      }
+
+      const brand = await queryRunner.manager.findOne('brands', {
+        where: { id: payload.brand_id },
+      });
+
+      if (!brand) {
+        throw new Error('Brand not found');
+      }
+
+      this.repository.merge(car, payload);
+
+      await queryRunner.manager.save(car);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: {
+          ...car,
+          brand,
+        },
+        message: 'Car updated successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      if (error.message === 'Car not found') {
+        throw new HttpException(
+          {
+            message: ['Car not found'],
+            error: 'Car not found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (error.message === 'Brand not found') {
+        throw new HttpException(
+          {
+            message: ['Brand not found'],
+            error: 'Brand not found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to update car'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async deleteCar(id: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const car: Cars = await this.repository.findOneBy({ id });
+
+      if (!car) {
+        throw new Error('Car not found');
+      }
+
+      await queryRunner.manager.softDelete(Cars, id);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: car,
+        message: 'Car deleted successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      if (error.message === 'Car not found') {
+        throw new HttpException(
+          {
+            message: ['Car not found'],
+            error: 'Car not found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to delete car'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async updateCarStatus(id: string, payload: updateStatusDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const car: Cars = await this.repository.findOneBy({ id });
+
+      if (!car) {
+        throw new Error('Car not found');
+      }
+
+      car.status = payload.status;
+
+      await queryRunner.manager.save(car);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: car,
+        message: 'Car status updated successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      if (error.message === 'Car not found') {
+        throw new HttpException(
+          {
+            message: ['Car not found'],
+            error: 'Car not found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to update car status'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
     }
   }
 }
