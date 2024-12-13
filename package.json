@@ -34,7 +34,7 @@
     "start:debug-auht:staging": "cross-env NODE_ENV=staging nest start auth-api --debug --watch",
     "start:auth-api:prod": "cross-env NODE_ENV=production nest start auth-api --watch",
     "start:debug-auth:prod": "cross-env NODE_ENV=production nest start auth-api --debug --watch",
-    "build:auth-api": "nest build tour-api"
+    "build:auth-api": "nest build tour-api",
     "build:tour-api": "nest build tour-api && cp -R apps/tour-api/public dist/apps/tour-api/public"
   },
   "dependencies": {
@@ -50,21 +50,19 @@
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^8.0.7",
     "@nestjs/typeorm": "^10.0.2",
-    "@sendgrid/mail": "^8.1.4",
     "@types/body-parser": "^1.19.5",
     "@types/multer": "^1.4.12",
     "body-parser": "^1.20.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "ioredis": "^5.4.1",
     "express": "^4.21.2",
+    "ioredis": "^5.4.1",
     "multer": "1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "passport-jwt": "^4.0.1",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "trim": "^1.0.1",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
