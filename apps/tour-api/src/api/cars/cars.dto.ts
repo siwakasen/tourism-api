@@ -8,7 +8,6 @@ import {
   IsBoolean,
 } from 'class-validator';
 
-//set up pagination + filter untuk fetch data staff
 export class PaginationDto {
   @ApiProperty({ default: 1 })
   @IsNumber()
@@ -25,20 +24,8 @@ export class PaginationDto {
   @IsOptional()
   public readonly search: string;
 }
-export class UploadImagesDto {
-  @ApiProperty({
-    type: 'array',
-    items: {
-      type: 'string',
-      format: 'binary',
-    },
-    description: 'Array of images to be uploaded',
-  })
-  @IsArray()
-  public readonly images: any[];
-}
 
-export class updateThumbnailDto {
+export class UploadImageDto {
   @ApiProperty({
     type: 'string',
     format: 'binary',
@@ -47,15 +34,14 @@ export class updateThumbnailDto {
   public readonly image: any;
 }
 
-export class DeleteImagesDto {
+export class CreateUpdateCarsDto {
   @ApiProperty()
   @IsString()
-  public readonly imagePath: string;
-}
-export class CreateUpdateTourPackageDto {
+  public readonly car_name: string;
+
   @ApiProperty()
   @IsString()
-  public readonly package_name: string;
+  public readonly brand_id: string;
 
   @ApiProperty()
   @IsString()
@@ -63,35 +49,19 @@ export class CreateUpdateTourPackageDto {
 
   @ApiProperty()
   @IsNumber()
-  public readonly package_price: number;
+  public readonly min_person: number;
 
   @ApiProperty()
   @IsNumber()
-  public readonly duration: number;
+  public readonly max_person: number;
 
   @ApiProperty()
   @IsNumber()
-  public readonly max_group_size: number;
-
-  @ApiProperty()
-  @IsNumber()
-  public readonly children_price: number;
-
-  @ApiProperty()
-  @IsArray()
-  public readonly itineraries: string[];
+  public readonly price: number;
 
   @ApiProperty()
   @IsArray()
   public readonly includes: string[];
-
-  @ApiProperty()
-  @IsArray()
-  public readonly pickup_areas: string[];
-
-  @ApiProperty()
-  @IsArray()
-  public readonly terms_conditions: string[];
 }
 
 export class updateStatusDto {

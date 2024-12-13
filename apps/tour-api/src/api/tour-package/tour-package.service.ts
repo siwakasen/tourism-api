@@ -4,7 +4,7 @@ import { TourPackage } from 'libs/entities';
 import { Repository, DataSource } from 'typeorm';
 import {
   PaginationDto,
-  CreateTourPackageDto,
+  CreateUpdateTourPackageDto,
   updateStatusDto,
 } from './tour-package.dto';
 import * as fs from 'fs';
@@ -31,7 +31,7 @@ export class TourPackageService {
       const parameters: Record<string, any> = {};
 
       if (search) {
-        conditions.push('tour_packages.package_name LIKE :search');
+        conditions.push('tour_packages.package_name ILIKE :search');
         parameters['search'] = `%${search}%`;
       }
 
@@ -105,7 +105,7 @@ export class TourPackageService {
     }
   }
 
-  public async createTourPackage(payload: CreateTourPackageDto) {
+  public async createTourPackage(payload: CreateUpdateTourPackageDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -157,25 +157,15 @@ export class TourPackageService {
       if (!tourPackage) {
         throw new Error('Tour package not found');
       }
-      //   delete old images if exist
+      const images = [];
+      const imagesUploaded = files.map((file) => file.filename);
+      images.push(...imagesUploaded);
+
       if (tourPackage.images) {
-        const existingImages = tourPackage.images;
-        existingImages.forEach((image) => {
-          console.log('image', image);
-          if (image === null) return;
-          const filePath = path.join('./uploads/tour-images', image);
-          try {
-            if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath); // Delete file synchronously
-              console.log(`Deleted image: ${filePath}`);
-            }
-          } catch (error) {
-            console.error(`Error deleting file ${filePath}:`, error);
-          }
-        });
+        tourPackage.images.push(...images);
+      } else {
+        tourPackage.images = images;
       }
-      const images = files.map((file) => file.filename);
-      tourPackage.images = images;
       await queryRunner.manager.save(tourPackage);
 
       await queryRunner.commitTransaction();
@@ -209,7 +199,148 @@ export class TourPackageService {
     }
   }
 
-  public async updateTourPackage(id: string, payload: CreateTourPackageDto) {
+  public async updateThumbnail(id: string, file: Express.Multer.File) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const tourPackage: TourPackage = await this.repository.findOneBy({ id });
+
+      if (!tourPackage) {
+        throw new Error('Tour package not found');
+      }
+
+      const filePath = path.join(
+        './apps/tour-api/public/tour-images',
+        tourPackage.images[0],
+      );
+      const distPath = path.join(
+        './dist/apps/tour-api/public/tour-images',
+        tourPackage.images[0],
+      );
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted storage image: ${filePath}`);
+      }
+      if (fs.existsSync(distPath)) {
+        fs.unlinkSync(distPath);
+        console.log(`Deleted public image: ${distPath}`);
+      }
+      tourPackage.images[0] = file.filename;
+
+      await queryRunner.manager.save(tourPackage);
+
+      await queryRunner.commitTransaction();
+      return {
+        data: tourPackage,
+        message: 'Thumbnail updated successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async deleteImage(id: string, imagePath: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const tourPackage: TourPackage = await this.repository.findOneBy({ id });
+
+      if (!tourPackage) {
+        throw new Error('Tour package not found');
+      }
+
+      const image = tourPackage.images.find((img) => img === imagePath);
+      if (!image) {
+        throw new Error('Image not found');
+      }
+      const filePath = path.join('./apps/tour-api/public/tour-images', image);
+      const distPath = path.join(
+        './dist/apps/tour-api/public/tour-images',
+        image,
+      );
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted storage image: ${filePath}`);
+      }
+      if (fs.existsSync(distPath)) {
+        fs.unlinkSync(distPath);
+        console.log(`Deleted public image: ${distPath}`);
+      }
+      tourPackage.images = tourPackage.images.filter((img) => img !== image);
+
+      await queryRunner.manager.save(tourPackage);
+
+      await queryRunner.commitTransaction();
+      return {
+        data: tourPackage,
+        message: 'Image deleted successfully',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (error.message === 'Image not found') {
+        throw new HttpException(
+          {
+            message: ['Image not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async updateTourPackage(
+    id: string,
+    payload: CreateUpdateTourPackageDto,
+  ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
