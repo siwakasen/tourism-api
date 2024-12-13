@@ -49,6 +49,12 @@ import { MailService } from '@app/helpers/mail/mail.service';
     JwtStrategy,
     AuthHelper,
   ],
-  exports: [AuthService, AuthHelper, JwtStrategy, AuthRedisService], // Export as needed
+  exports: [
+    AuthService,
+    AuthHelper,
+    MailService,
+    JwtStrategy,
+    AuthRedisService,
+  ], // Export as needed
 })
 export class AuthModule {}

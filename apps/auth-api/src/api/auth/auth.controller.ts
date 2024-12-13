@@ -16,22 +16,18 @@ import {
   LoginReqDto,
   LoginResponseDto,
   RegisterDto,
+  requestResetPasswordDto,
   ResetPasswordDto,
-  SendEmailDto,
   TokenDto,
 } from './auth.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { MailService } from '@app/helpers/mail/mail.service';
 
 @ApiTags('Auth Controller')
 @ApiBearerAuth() //
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly service: AuthService,
-    private readonly mailService: MailService,
-  ) {}
+  constructor(private readonly service: AuthService) {}
 
   @ApiResponse({ status: 200, description: 'Token valid' })
   @ApiBadRequestResponse({ description: 'Token Invalid' })
@@ -75,14 +71,9 @@ export class AuthController {
     console.log(req.admin);
   }
 
-  @Post('send')
-  async sendEmail(@Body() body: SendEmailDto) {
-    await this.mailService.sendMail(
-      body.to,
-      body.subject,
-      body.text,
-      body.html,
-    );
+  @Post('request-reset-password')
+  async requestResetPasswords(@Body() body: requestResetPasswordDto) {
+    await this.service.requestResetPassword(body);
     return { message: 'Email sent successfully!' };
   }
 }

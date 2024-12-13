@@ -2,16 +2,23 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from 'libs/entities/tour_admin/admin.entity';
 import { Repository, DataSource } from 'typeorm';
-import { LoginReqDto, RegisterDto, ResetPasswordDto } from './auth.dto';
+import {
+  LoginReqDto,
+  RegisterDto,
+  requestResetPasswordDto,
+  ResetPasswordDto,
+} from './auth.dto';
 import { AuthRedisService } from './redis.service';
 import { AuthHelper } from '@app/helpers/auth/admin/auth.helper';
 import { AdminToken } from 'libs/entities';
+import { MailService } from '@app/helpers/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly dataSource: DataSource,
     private readonly redisService: AuthRedisService,
+    private readonly mailService: MailService,
   ) {}
   @InjectRepository(Admin)
   private readonly repository: Repository<Admin>;
@@ -38,24 +45,6 @@ export class AuthService {
     newUser.createdAt = new Date();
 
     await this.repository.save(newUser);
-  }
-
-  public async requestResetPassword(email: string): Promise<void> {
-    const user = await this.repository.findOne({ where: { email } });
-    if (!user) {
-      throw new HttpException(
-        `User with email ${email} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const hashedEmail = this.helper.generateResetPwToken(email);
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + 1);
-    await this.adminTokenRepo.save({
-      token: hashedEmail,
-      expiredAt: currentDate,
-    });
   }
 
   public login = async (body: LoginReqDto) => {
@@ -98,6 +87,34 @@ export class AuthService {
     delete user.password;
     return { user, token: this.helper.generateToken(user) };
   };
+
+  public async requestResetPassword(
+    payload: requestResetPasswordDto,
+  ): Promise<void> {
+    const { email } = payload;
+
+    const user = await this.repository.findOne({
+      where: { email },
+    });
+    if (!user) {
+      throw new HttpException(
+        `User with email ${email} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const hashedEmail = this.helper.generateResetPwToken(email);
+    const url = 'http://localhost:5173/reset-password/' + hashedEmail;
+    await this.mailService.requestResetPassword({
+      email: email,
+      url: url,
+    });
+    const currentDate = new Date();
+    await this.adminTokenRepo.save({
+      token: hashedEmail,
+      expiredAt: currentDate,
+    });
+  }
 
   public async verifyToken(token: string): Promise<string | never> {
     return token;

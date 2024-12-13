@@ -67,35 +67,10 @@ export class RegisterDto {
   public readonly password: string;
 }
 
-export class SendEmailDto {
-  @ApiProperty({
-    example: 'recipient@example.com',
-    description: 'The email address of the recipient.',
-  })
+export class requestResetPasswordDto {
+  @ApiProperty({ default: 'test@gmail.com' })
   @IsEmail()
-  public readonly to: string;
-
-  @ApiProperty({
-    example: 'Welcome to NestJS',
-    description: 'The subject of the email.',
-  })
-  @IsString()
-  public readonly subject: string;
-
-  @ApiProperty({
-    example: 'Hello, this is a text email.',
-    description: 'The plain text content of the email.',
-  })
-  @IsString()
-  public readonly text: string;
-
-  @ApiProperty({
-    example: '<h1>Welcome</h1><p>This is an HTML email.</p>',
-    description: 'The HTML content of the email (optional).',
-    required: false,
-  })
-  @IsString()
-  public readonly html?: string;
+  public readonly email: string;
 }
 
 export class EmailResponseDto {
