@@ -119,7 +119,7 @@ export class MailService {
         attachments: [
           {
             filename: 'lock-icon.png',
-            path: 'uploads/tour-images/images/email/image-1.png', // Adjust with actual path
+            path: 'apps/auth-api/images/email/image-1.png', // Adjust with actual path
             cid: 'lockIcon',
           },
         ],
