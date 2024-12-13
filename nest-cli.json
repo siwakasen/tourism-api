@@ -3,7 +3,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "./",
   "compilerOptions": {
-    "deleteOutDir": true,
+    "deleteOutDir": false,
     "webpack": true,
     "tsConfigPath": "apps/tourweb_be/tsconfig.app.json"
   },

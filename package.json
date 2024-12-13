@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:all": "concurrently \"pnpm run start:dev\" \"pnpm build:tour-api\" \"pnpm run watch:public\"",
+    "dev": "concurrently \"pnpm run start:dev\" \"pnpm watch:public\"",
     "start:dev": "cross-env NODE_ENV=development nest start tour-api --watch",
     "watch:public": "chokidar 'apps/tour-api/public/**/*' -c 'cp -R apps/tour-api/public dist/apps/tour-api/'",
     "start:debug": "nest start --debug --watch",

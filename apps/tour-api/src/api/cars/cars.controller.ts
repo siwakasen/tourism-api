@@ -139,7 +139,7 @@ export class CarsController {
     status: 200,
     description: 'Successfully update status data cars',
   })
-  @Patch('/:id')
+  @Patch('/status/:id')
   public async updateStatusCars(
     @Param('id') id: string,
     @Body() body: updateStatusDto,
