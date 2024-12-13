@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Unique,
 } from 'typeorm';
 
 @Entity('tour_packages')
@@ -22,6 +23,7 @@ export class TourPackage {
     example: 'Bali Island Adventure',
   })
   @Column({ type: 'varchar', length: 255 })
+  @Unique('UQ_PACKAGE_NAME', ['package_name'])
   package_name: string;
 
   @ApiProperty({
@@ -36,8 +38,8 @@ export class TourPackage {
     example:
       '["https://example.com/image1.jpg", "https://example.com/image2.jpg"]',
   })
-  @Column({ type: 'text', nullable: true })
-  images: string;
+  @Column({ type: 'json', nullable: true })
+  images: string[];
 
   @ApiProperty({
     description: 'The price of the tour package in USD',
@@ -61,13 +63,6 @@ export class TourPackage {
   max_group_size: number;
 
   @ApiProperty({
-    description: 'The recommended age range for participants',
-    example: 18,
-  })
-  @Column({ type: 'int' })
-  age_rage: number;
-
-  @ApiProperty({
     description: 'The discounted price for children (if applicable)',
     example: 500,
     nullable: true,
@@ -80,30 +75,30 @@ export class TourPackage {
     example:
       '[{"day": 1, "activity": "Visit Ubud Forest"}, {"day": 2, "activity": "Relax at Kuta Beach"}]',
   })
-  @Column({ type: 'text', nullable: true })
-  itineraries: string;
+  @Column({ type: 'json', nullable: true })
+  itineraries: string[];
 
   @ApiProperty({
     description: 'The list of items included in the tour package',
     example: '["Hotel", "Meals", "Guided Tours"]',
   })
-  @Column({ type: 'text', nullable: true })
-  includes: string;
+  @Column({ type: 'json', nullable: true })
+  includes: string[];
 
   @ApiProperty({
     description: 'The areas where pickup is available',
     example: '["Denpasar", "Ubud", "Kuta"]',
   })
-  @Column({ type: 'text', nullable: true })
-  pickup_areas: string;
+  @Column({ type: 'json', nullable: true })
+  pickup_areas: string[];
 
   @ApiProperty({
     description: 'Terms and conditions for the tour package',
     example:
       '{"cancellation_policy": "Non-refundable", "payment": "Full payment required"}',
   })
-  @Column({ type: 'text', nullable: true })
-  terms_conditions: string;
+  @Column({ type: 'json', nullable: true })
+  terms_conditions: string[];
 
   @ApiProperty({
     description: 'Status of the tour package (active/inactive)',

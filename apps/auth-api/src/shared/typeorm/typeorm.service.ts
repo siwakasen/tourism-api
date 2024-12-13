@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { TourPackage } from 'libs/entities';
+import { Admin, AdminToken } from 'libs/entities';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -19,11 +19,11 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       ssl: this.config.get<boolean>('DATABASE_SSL')
         ? { rejectUnauthorized: false } // Non-strict SSL (Neon kompatibel dengan ini)
         : undefined,
-      entities: [TourPackage],
+      entities: [Admin, AdminToken],
       migrations: ['dist/migrations/*.{ts,js}'],
       migrationsTableName: 'typeorm_migrations',
       logger: 'file',
-      synchronize: this.config.get<boolean>('SYNCHRONIZE'), // NEVER USE TRUE IN PRODUCTION
+      synchronize: false, // NEVER USE TRUE IN PRODUCTION
     };
   }
 }
