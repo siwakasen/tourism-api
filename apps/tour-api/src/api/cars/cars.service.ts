@@ -69,7 +69,11 @@ export class CarsService {
 
   public async getCarById(id: string) {
     try {
-      const car: Cars = await this.repository.findOneBy({ id });
+      const queryBuilder = this.repository
+        .createQueryBuilder('cars')
+        .leftJoinAndSelect('cars.brand', 'brand.id');
+
+      const car = await queryBuilder.where('cars.id = :id', { id }).getOne();
 
       if (!car) {
         throw new Error('Car not found');
