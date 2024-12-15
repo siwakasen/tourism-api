@@ -1,8 +1,19 @@
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BrandsService } from './ brands.service';
-import { PaginationDto } from './brands.dto';
-import { Controller, Param } from '@nestjs/common';
-import { Get, Query } from '@nestjs/common';
+import { CreateUpdateBrandsDto, PaginationDto } from './brands.dto';
+import {
+  Get,
+  Query,
+  UseGuards,
+  Controller,
+  Post,
+  Body,
+  Put,
+  Param,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@ApiBearerAuth()
 @ApiTags('Brands')
 @Controller('/brands')
 export class BrandsController {
@@ -13,12 +24,31 @@ export class BrandsController {
     description: 'Successfuly get data brands',
   })
   @Get('')
+  @UseGuards(AuthGuard('admin'))
   public async getBrands(@Query() query: PaginationDto) {
     return await this.brandsService.getAllBrands(query);
   }
 
-  @Get('/:id')
-  public async getBrandById(@Param('id') id: string) {
-    return await this.brandsService.getBrandById(id);
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly post data brands',
+  })
+  @Post('')
+  @UseGuards(AuthGuard('admin'))
+  public async createBrands(@Body() body: CreateUpdateBrandsDto) {
+    return await this.brandsService.createBrands(body);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully update data brands',
+  })
+  @UseGuards(AuthGuard('admin'))
+  @Put('/:id')
+  public async updateCars(
+    @Param('id') id: string,
+    @Body() body: CreateUpdateBrandsDto,
+  ) {
+    return await this.brandsService.updateBrands(id, body);
   }
 }
