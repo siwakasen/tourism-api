@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Brands } from 'libs/entities';
-import { PaginationDto } from './brands.dto';
+import { CreateUpdateBrandsDto, PaginationDto } from './brands.dto';
 
 @Injectable()
 export class BrandsService {
@@ -60,20 +60,55 @@ export class BrandsService {
     }
   }
 
-  public async getBrandById(id: string) {
+  public async createBrands(body: CreateUpdateBrandsDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const result: Brands = await this.repository.findOneBy({ id });
+      const brand: Brands = this.repository.create(body);
 
-      if (!result) {
-        throw new Error('Brand not found');
-      }
+      await queryRunner.manager.save(brand);
+      await queryRunner.commitTransaction();
 
       return {
-        data: result,
-        message: 'Successfully get data brand',
+        data: brand,
+        message: 'Successfully create data brands',
       };
     } catch (error) {
-      if (error.message === 'Brand not found') {
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to create data brands'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async updateBrands(id: string, body: CreateUpdateBrandsDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const brand: Brands = await this.repository.findOneBy({ id });
+      if (!brand) {
+        throw new Error('Data brands not found');
+      }
+
+      this.repository.merge(brand, body);
+      await queryRunner.manager.save(brand);
+      await queryRunner.commitTransaction();
+
+      return {
+        data: brand,
+        message: 'Successfully update data brands',
+      };
+    } catch (error) {
+      if (error.message === 'Data brands not found') {
         throw new HttpException(
           {
             message: [error.message],
@@ -85,12 +120,14 @@ export class BrandsService {
       }
       throw new HttpException(
         {
-          message: [error.message || 'Failed to fetch data brand'],
+          message: [error.message || 'Failed to update data brands'],
           error: error.message || 'Internal server error',
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    } finally {
+      await queryRunner.release();
     }
   }
 }

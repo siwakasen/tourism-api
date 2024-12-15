@@ -11,12 +11,19 @@ import {
   HttpStatus,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadedFiles } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common';
 import { TourPackageService } from './tour-package.service';
-import { ApiResponse, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiResponse,
+  ApiTags,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import {
   PaginationDto,
   CreateUpdateTourPackageDto,
@@ -25,7 +32,9 @@ import {
   DeleteImagesDto,
 } from './tour-package.dto';
 import { diskStorage } from 'multer';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiBearerAuth()
 @ApiTags('Tour Package')
 @Controller('/tour-package')
 export class TourPackageController {
@@ -40,6 +49,7 @@ export class TourPackageController {
     description: 'Internal server error',
   })
   @Get('')
+  @UseGuards(AuthGuard('admin'))
   public async getTourPackage(@Query() query: PaginationDto) {
     return await this.tourApiService.getAllTourPackage(query);
   }
@@ -47,6 +57,7 @@ export class TourPackageController {
     status: 200,
     description: 'Successfuly get data tour package by id',
   })
+  @UseGuards(AuthGuard('admin'))
   @Get('/:id')
   public async getTourPackageById(@Param('id') id: string) {
     return await this.tourApiService.getTourPackageById(id);
@@ -56,6 +67,7 @@ export class TourPackageController {
     status: 200,
     description: 'Successfuly create data tour package',
   })
+  @UseGuards(AuthGuard('admin'))
   @Post('')
   public async createTourPackage(@Body() body: CreateUpdateTourPackageDto) {
     return await this.tourApiService.createTourPackage(body);
@@ -95,6 +107,7 @@ export class TourPackageController {
       },
     }),
   )
+  @UseGuards(AuthGuard('admin'))
   @Post('upload-images/:id')
   @ApiBody({
     type: UploadImagesDto,
@@ -113,7 +126,6 @@ export class TourPackageController {
     return await this.tourApiService.uploadImages(id, files);
   }
 
-  @Delete('delete-images/:id')
   @ApiResponse({
     status: 200,
     description: 'Successfully deleted tour package images',
@@ -121,6 +133,8 @@ export class TourPackageController {
   @ApiBody({
     type: DeleteImagesDto,
   })
+  @UseGuards(AuthGuard('admin'))
+  @Delete('delete-images/:id')
   public async deleteImage(
     @Param('id') id: string,
     @Body() body: DeleteImagesDto,
@@ -132,6 +146,7 @@ export class TourPackageController {
     status: 200,
     description: 'Successfuly update data tour package',
   })
+  @UseGuards(AuthGuard('admin'))
   @Put('/:id')
   public async updateTourPackage(
     @Param('id') id: string,
@@ -143,6 +158,7 @@ export class TourPackageController {
     status: 200,
     description: 'Successfuly update data tour package status',
   })
+  @UseGuards(AuthGuard('admin'))
   @Patch('/status/:id')
   public async updateTourPackageStatus(
     @Param('id') id: string,
@@ -155,6 +171,7 @@ export class TourPackageController {
     status: 200,
     description: 'Successfuly delete data tour package',
   })
+  @UseGuards(AuthGuard('admin'))
   @Delete('/:id')
   public async deleteTourPackage(@Param('id') id: string) {
     return await this.tourApiService.deleteTourPackage(id);

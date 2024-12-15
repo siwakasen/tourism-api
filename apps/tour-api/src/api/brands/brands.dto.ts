@@ -18,3 +18,9 @@ export class PaginationDto {
   @IsOptional()
   public readonly search: string;
 }
+
+export class CreateUpdateBrandsDto {
+  @ApiProperty()
+  @IsString()
+  public readonly brand_name: string;
+}

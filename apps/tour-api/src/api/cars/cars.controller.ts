@@ -11,11 +11,18 @@ import {
   Put,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadedFile } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common';
-import { ApiResponse, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiResponse,
+  ApiTags,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import {
   PaginationDto,
@@ -24,7 +31,9 @@ import {
   updateStatusDto,
 } from './cars.dto';
 import { CarsService } from './cars.service';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiBearerAuth()
 @ApiTags('Cars')
 @Controller('/cars')
 export class CarsController {
@@ -39,6 +48,7 @@ export class CarsController {
     status: 500,
     description: 'Internal server error',
   })
+  @UseGuards(AuthGuard('admin'))
   @Get('')
   public async getAllCars(@Query() query: PaginationDto) {
     return await this.carsService.getAllCars(query);
@@ -48,6 +58,7 @@ export class CarsController {
     status: 200,
     description: 'Successfuly get data cars by id',
   })
+  @UseGuards(AuthGuard('admin'))
   @Get('/:id')
   public async getCarsById(@Param('id') id: string) {
     return await this.carsService.getCarById(id);
@@ -57,6 +68,7 @@ export class CarsController {
     status: 200,
     description: 'Successfuly create data cars',
   })
+  @UseGuards(AuthGuard('admin'))
   @Post('')
   public async createCars(@Body() body: CreateUpdateCarsDto) {
     return await this.carsService.createCar(body);
@@ -96,6 +108,7 @@ export class CarsController {
       },
     }),
   )
+  @UseGuards(AuthGuard('admin'))
   @Post('upload-image/:id')
   @ApiBody({
     type: UploadImageDto,
@@ -116,8 +129,9 @@ export class CarsController {
 
   @ApiResponse({
     status: 200,
-    description: 'Successfully delete data cars',
+    description: 'Successfully update data cars',
   })
+  @UseGuards(AuthGuard('admin'))
   @Put('/:id')
   public async updateCars(
     @Param('id') id: string,
@@ -130,6 +144,7 @@ export class CarsController {
     status: 200,
     description: 'Successfully delete data cars',
   })
+  @UseGuards(AuthGuard('admin'))
   @Delete('/:id')
   public async deleteCars(@Param('id') id: string) {
     return await this.carsService.deleteCar(id);
@@ -139,6 +154,7 @@ export class CarsController {
     status: 200,
     description: 'Successfully update status data cars',
   })
+  @UseGuards(AuthGuard('admin'))
   @Patch('/status/:id')
   public async updateStatusCars(
     @Param('id') id: string,

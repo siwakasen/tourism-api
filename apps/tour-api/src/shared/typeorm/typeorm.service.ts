@@ -22,7 +22,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       entities: [TourPackage, Brands, Cars],
       migrations: ['dist/migrations/*.{ts,js}'],
       migrationsTableName: 'typeorm_migrations',
-      logger: 'file',
+      logger: 'advanced-console',
+      logging: ['query', 'error'],
       synchronize: true, // NEVER USE TRUE IN PRODUCTION
     };
   }

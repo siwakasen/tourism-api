@@ -8,6 +8,7 @@ import { CarsModule } from './api/cars/cars.module';
 import { BrandsModule } from './api/brands/brands.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+
 const envFilePath: string = getEnvPath(`${__dirname}/common/helper`);
 console.log('envFilePath:', getEnvPath(`${__dirname}`));
 @Module({
@@ -21,7 +22,6 @@ console.log('envFilePath:', getEnvPath(`${__dirname}`));
       rootPath: join(__dirname, '..', 'public'), // Adjusted for apps/tour-api/public
       serveRoot: '/public', // Optional: URL prefix for static files
     }),
-
     TourPackageModule,
     CarsModule,
     BrandsModule,
