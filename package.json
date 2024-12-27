@@ -34,8 +34,9 @@
     "start:debug-auht:staging": "cross-env NODE_ENV=staging nest start auth-api --debug --watch",
     "start:auth-api:prod": "cross-env NODE_ENV=production nest start auth-api --watch",
     "start:debug-auth:prod": "cross-env NODE_ENV=production nest start auth-api --debug --watch",
-    "build:auth-api": "nest build tour-api",
-    "build:tour-api": "nest build tour-api && cp -R apps/tour-api/public dist/apps/tour-api/public"
+    "build:auth-api": "nest build auth-api",
+    "build:auth-api:prod": "cross-env NODE_ENV=production nest build auth-api",
+    "build:tour-api": "nest build tour-api"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.12.4",

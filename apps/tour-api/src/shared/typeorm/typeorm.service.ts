@@ -23,7 +23,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       migrations: ['dist/migrations/*.{ts,js}'],
       migrationsTableName: 'typeorm_migrations',
       logger: 'advanced-console',
-      logging: ['query', 'error'],
+      //   logging: ['query', 'error'],
+      logging: ['error'],
       synchronize: true, // NEVER USE TRUE IN PRODUCTION
     };
   }
