@@ -65,3 +65,6 @@ apps/auth-api/src/common/envs/development.env
 apps/auth-api/src/common/envs/production.env
 apps/tour-api/src/common/envs/development.env
 apps/tour-api/src/common/envs/production.env
+
+# Docker
+docker-compose.yml
