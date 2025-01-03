@@ -9,6 +9,7 @@ import { BrandsModule } from './api/brands/brands.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserCarsModule } from './api/user-cars/user-cars.module';
+import { UserTourPackageModule } from './api/user-tour-package/user-tour-package.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/helper`);
 console.log('envFilePath:', getEnvPath(`${__dirname}`));
@@ -27,6 +28,7 @@ console.log('envFilePath:', getEnvPath(`${__dirname}`));
     CarsModule,
     BrandsModule,
     UserCarsModule,
+    UserTourPackageModule,
   ],
 })
 export class ApiModule {}

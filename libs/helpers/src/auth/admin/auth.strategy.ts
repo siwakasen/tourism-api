@@ -19,7 +19,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'admin') {
   }
 
   public validate(payload: string): Promise<Admin | never> {
-    console.log('masuk kesini');
     return this.helper.validateUser(payload);
   }
 }
