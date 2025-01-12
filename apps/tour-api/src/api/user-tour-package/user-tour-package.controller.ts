@@ -4,7 +4,7 @@ import { UserTourPackageService } from './user-tour-package.service';
 import { PaginationDto } from './user-tour-package.dto';
 
 @ApiTags('User Tour Package')
-@Controller('/user-tour-package')
+@Controller('/user-tour-packages')
 export class UserTourPackageController {
   @Inject(UserTourPackageService)
   private readonly userTourPackageService: UserTourPackageService;
