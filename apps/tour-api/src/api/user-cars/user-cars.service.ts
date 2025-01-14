@@ -60,4 +60,40 @@ export class UserCarsService {
       );
     }
   }
+
+  public async getCarsById(id: string) {
+    try {
+      const result = await this.repository.findOne({
+        where: { id, status: true },
+      });
+
+      if (!result) {
+        throw new Error('Car not found');
+      }
+
+      return {
+        data: result,
+        message: 'Success get data car by id',
+      };
+    } catch (error) {
+      if (error.message === 'Car not found') {
+        throw new HttpException(
+          {
+            message: [error.message || 'Car not found'],
+            error: error.message || 'Internal server error',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Failed to fetch data cars'],
+          error: error.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

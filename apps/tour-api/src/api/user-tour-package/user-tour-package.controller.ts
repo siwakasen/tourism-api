@@ -1,4 +1,4 @@
-import { Controller, Inject, Get, Query } from '@nestjs/common';
+import { Controller, Inject, Get, Query, Param } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserTourPackageService } from './user-tour-package.service';
 import { PaginationDto } from './user-tour-package.dto';
@@ -20,5 +20,14 @@ export class UserTourPackageController {
   @Get('')
   public async getAllUserTourPackage(@Query() query: PaginationDto) {
     return await this.userTourPackageService.getAllTourPackage(query);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly get data tour package by id',
+  })
+  @Get('/:id')
+  public async getUserTourPackageById(@Param('id') id: string) {
+    return await this.userTourPackageService.getTourPackageById(id);
   }
 }

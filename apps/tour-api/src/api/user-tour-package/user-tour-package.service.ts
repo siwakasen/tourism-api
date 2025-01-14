@@ -62,4 +62,39 @@ export class UserTourPackageService {
       );
     }
   }
+
+  public async getTourPackageById(id: string) {
+    try {
+      const result = await this.repository.findOne({
+        where: { id, status: true },
+      });
+      if (!result) {
+        throw new Error('Tour package not found');
+      }
+
+      return {
+        data: result,
+        message: 'Successfully get data tour package by id',
+      };
+    } catch (error) {
+      if (error.message === 'Tour package not found') {
+        throw new HttpException(
+          {
+            message: ['Tour package not found'],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
