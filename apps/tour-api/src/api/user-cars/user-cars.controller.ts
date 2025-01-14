@@ -1,4 +1,4 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Inject, Param } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserCarsService } from './user-cars.service';
 import { PaginationDto } from './user-cars.dto';
@@ -21,5 +21,14 @@ export class UserCarsController {
   @Get('')
   public async getAllUserCars(@Query() query: PaginationDto) {
     return await this.userCarsService.getAllCars(query);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly get data cars by id',
+  })
+  @Get('/:id')
+  public async getUserCarsById(@Param('id') id: string) {
+    return await this.userCarsService.getCarsById(id);
   }
 }
