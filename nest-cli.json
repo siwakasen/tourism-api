@@ -3,7 +3,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "./",
   "compilerOptions": {
-    "deleteOutDir": true,
+    "deleteOutDir": false,
     "webpack": true,
     "tsConfigPath": "apps/tourweb_be/tsconfig.app.json"
   },
@@ -21,6 +21,21 @@
           {
             "include": "common/envs/*.env",
             "outDir": "dist/apps/tour-api/src/common/helper"
+          }
+        ]
+      }
+    },
+    "auth-api": {
+      "type": "application",
+      "root": "apps/auth-api/src",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth-api/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "common/envs/*.env",
+            "outDir": "dist/apps/auth-api/src/common/helper"
           }
         ]
       }

@@ -4,17 +4,30 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ApiModule } from './api.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
 // import { FormatErrorInterceptor } from 'libs/helper/interceptors/exeption.interceptor';
 
 async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(ApiModule);
   const config: ConfigService = app.get(ConfigService);
   const port: number = config.get<number>('PORT');
-
+  const gRPCPort: number = config.get<number>('AUTH_GRPC_PORT');
   app.set('trust proxy', 1);
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   //   app.useGlobalInterceptors(new FormatErrorInterceptor());
+  const appGRPC = await NestFactory.createMicroservice<MicroserviceOptions>(
+    ApiModule,
+    {
+      transport: Transport.GRPC,
+      options: {
+        url: `0.0.0.0:${gRPCPort}`,
+        package: 'auth',
+        protoPath: 'contract/auth-api.proto',
+      },
+    },
+  );
 
   const configSwagger = new DocumentBuilder()
     .setTitle('Admin Api Service')
@@ -22,6 +35,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addServer(`http://localhost:${port}`)
+    .addServer(`https://tourism-api.cashtrack.my.id`)
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api-docs', app, document);
@@ -29,6 +43,8 @@ async function bootstrap() {
   await app.listen(port, () => {
     console.log('[REST]', `http://localhost:${port}`);
   });
+
+  await appGRPC.listen();
 }
 
 bootstrap();

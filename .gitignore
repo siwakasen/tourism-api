@@ -3,6 +3,7 @@
 /node_modules
 /build
 
+
 # Logs
 logs
 *.log
@@ -54,3 +55,16 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+#uploaded files
+/apps/tour-api/public/*
+
+
+# ENV
+apps/auth-api/src/common/envs/development.env
+apps/auth-api/src/common/envs/production.env
+apps/tour-api/src/common/envs/development.env
+apps/tour-api/src/common/envs/production.env
+
+# Docker
+docker-compose.yml

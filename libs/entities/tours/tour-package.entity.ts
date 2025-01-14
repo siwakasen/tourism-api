@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Unique,
 } from 'typeorm';
 
 @Entity('tour_packages')
@@ -22,6 +23,7 @@ export class TourPackage {
     example: 'Bali Island Adventure',
   })
   @Column({ type: 'varchar', length: 255 })
+  @Unique('UQ_PACKAGE_NAME', ['package_name'])
   package_name: string;
 
   @ApiProperty({
@@ -61,13 +63,6 @@ export class TourPackage {
   max_group_size: number;
 
   @ApiProperty({
-    description: 'The recommended age range for participants',
-    example: 18,
-  })
-  @Column({ type: 'int' })
-  age_rage: number;
-
-  @ApiProperty({
     description: 'The discounted price for children (if applicable)',
     example: 500,
     nullable: true,
@@ -81,7 +76,7 @@ export class TourPackage {
       '[{"day": 1, "activity": "Visit Ubud Forest"}, {"day": 2, "activity": "Relax at Kuta Beach"}]',
   })
   @Column({ type: 'json', nullable: true })
-  itineraries: Record<string, any>[];
+  itineraries: string[];
 
   @ApiProperty({
     description: 'The list of items included in the tour package',
@@ -103,7 +98,7 @@ export class TourPackage {
       '{"cancellation_policy": "Non-refundable", "payment": "Full payment required"}',
   })
   @Column({ type: 'json', nullable: true })
-  terms_conditions: Record<string, any>;
+  terms_conditions: string[];
 
   @ApiProperty({
     description: 'Status of the tour package (active/inactive)',
