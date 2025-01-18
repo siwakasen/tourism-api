@@ -16,16 +16,13 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: this.config.get<string>('DATABASE_NAME'),
       username: this.config.get<string>('DATABASE_USER'),
       password: this.config.get<string>('DATABASE_PASSWORD'),
-      ssl: this.config.get<boolean>('DATABASE_SSL')
-        ? { rejectUnauthorized: false } // Non-strict SSL (Neon kompatibel dengan ini)
-        : undefined,
       entities: [TourPackage, Brands, Cars],
       migrations: ['dist/migrations/*.{ts,js}'],
       migrationsTableName: 'typeorm_migrations',
       logger: 'advanced-console',
       //   logging: ['query', 'error'],
       logging: ['error'],
-      synchronize: true, // NEVER USE TRUE IN PRODUCTION
+      synchronize: false,
     };
   }
 }
