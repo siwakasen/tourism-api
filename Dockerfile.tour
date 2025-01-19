@@ -21,4 +21,4 @@ COPY /contract ./contract
 
 
 EXPOSE 3002
-CMD ["node tour-api/src/main"]
+CMD ["node dist/apps/tour-api/src/main"]
