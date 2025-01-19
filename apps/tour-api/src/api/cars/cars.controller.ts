@@ -82,7 +82,7 @@ export class CarsController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './apps/tour-api/public/car-images',
+        destination: './dist/apps/tour-api/public/car-images',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);

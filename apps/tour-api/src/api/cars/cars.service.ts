@@ -168,18 +168,10 @@ export class CarsService {
         throw new Error('Car not found');
       }
       if (car.car_image) {
-        const filePath = path.join(
-          './apps/tour-api/public/car-images',
-          car.car_image,
-        );
         const distPath = path.join(
           './dist/apps/tour-api/public/car-images',
           car.car_image,
         );
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-          console.log(`Deleted storage image: ${filePath}`);
-        }
         if (fs.existsSync(distPath)) {
           fs.unlinkSync(distPath);
           console.log(`Deleted public image: ${distPath}`);
