@@ -16,9 +16,8 @@ ENV SHELL=/bin/bash
 
 WORKDIR /app
 COPY --from=builder app/node_modules ./node_modules
-COPY /dist/apps/tour-api ./dist/apps/tour-api
+COPY /dist ./dist
 COPY /contract ./contract
 
-
 EXPOSE 3002
-CMD ["node dist/apps/tour-api/src/main"]
+CMD ["node", "dist/apps/tour-api/src/main"]
