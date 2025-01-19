@@ -81,7 +81,7 @@ export class TourPackageController {
   @UseInterceptors(
     FilesInterceptor('images', 20, {
       storage: diskStorage({
-        destination: './apps/tour-api/public/tour-images',
+        destination: './dist/apps/tour-api/public/tour-images',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);

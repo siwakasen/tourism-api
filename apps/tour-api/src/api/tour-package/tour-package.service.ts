@@ -210,19 +210,10 @@ export class TourPackageService {
       if (!tourPackage) {
         throw new Error('Tour package not found');
       }
-
-      const filePath = path.join(
-        './apps/tour-api/public/tour-images',
-        tourPackage.images[0],
-      );
       const distPath = path.join(
         './dist/apps/tour-api/public/tour-images',
         tourPackage.images[0],
       );
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-        console.log(`Deleted storage image: ${filePath}`);
-      }
       if (fs.existsSync(distPath)) {
         fs.unlinkSync(distPath);
         console.log(`Deleted public image: ${distPath}`);
