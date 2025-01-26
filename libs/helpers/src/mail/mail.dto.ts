@@ -11,3 +11,8 @@ export class bookingToOwnerDto {
   public readonly pickup_time: string;
   public readonly additional_condition: string;
 }
+
+export class bookingToCustomerDto {
+  public readonly package_name: string;
+  public readonly email: string;
+}

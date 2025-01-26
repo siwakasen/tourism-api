@@ -115,7 +115,7 @@ export class AuthService {
 
     const hashedEmail = this.helper.generateResetPwToken(email);
     const url = `${process.env.FRONTEND_URL}/reset-password/` + hashedEmail;
-    await this.mailService.requestResetPassword({
+    this.mailService.requestResetPassword({
       email: email,
       url: url,
     });

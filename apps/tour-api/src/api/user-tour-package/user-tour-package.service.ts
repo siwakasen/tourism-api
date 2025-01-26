@@ -111,7 +111,7 @@ export class UserTourPackageService {
       if (!result) {
         throw new Error('Tour package not found');
       }
-      await this.mailService.sendOrderPackageTourToOwner({
+      this.mailService.sendOrderPackageTourToOwner({
         package_name: result.package_name,
         name: payload.name,
         email: payload.email,
@@ -125,8 +125,13 @@ export class UserTourPackageService {
         additional_condition: payload.additional_condition ?? '-',
       });
 
+      this.mailService.sendConfirmationBookingToCustomer({
+        package_name: result.package_name,
+        email: payload.email,
+      });
+
       return {
-        message: 'Successfully send order package tour to owner',
+        message: 'Successfully send emails to owner and customer',
       };
     } catch (error) {
       if (error.message === 'Tour package not found') {
