@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { bookingToOwnerDto } from './mail.dto';
 
 @Injectable()
 export class MailService {
@@ -119,7 +120,7 @@ export class MailService {
         attachments: [
           {
             filename: 'lock-icon.png',
-            path: 'apps/auth-api/images/email/image-1.png', // Adjust with actual path
+            path: 'auth-api/images/email/image-1.png', // Adjust with actual path
             cid: 'lockIcon',
           },
         ],
@@ -128,6 +129,155 @@ export class MailService {
       console.log(`Email sent to ${email}`);
     } catch (error) {
       console.error(`Error sending email to `, error);
+      throw error;
+    }
+  }
+
+  async sendOrderPackageTourToOwner(payload: bookingToOwnerDto) {
+    try {
+      const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Booking Confirmation</title>
+        <style>
+            body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9ff;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            }
+            .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+            text-align: center;
+            padding: 20px;
+            }
+            .header img {
+            width: 80px;
+            margin-bottom: 10px;
+            }
+            .content {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            }
+            .content h1 {
+            text-align: center;
+            color: #333;
+            }
+            .table-container {
+            margin-top: 20px;
+            }
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            }
+            th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            }
+            th {
+            background-color: #fdb441;
+            color: white;
+            }
+            .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            }
+        </style>
+        </head>
+        <body>
+        <div class="container">
+            <div class="header">
+            <h2>New Booking Received</h2>
+            </div>
+            <div class="content">
+            <p>Hello,</p>
+            <p>A new package tour booking has just been made. Below are the details:</p>
+            <div class="table-container">
+                <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Package Name</strong></td>
+                    <td>${payload.package_name}</td>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>${payload.name}</td>
+                </tr>
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td>${payload.email}</td>
+                </tr>
+                <tr>
+                    <td><strong>Country of Origin</strong></td>
+                    <td>${payload.country_of_origin}</td>
+                </tr>
+                <tr>
+                    <td><strong>Phone Number</strong></td>
+                    <td>${payload.phone_number}</td>
+                </tr>
+                <tr>
+                    <td><strong>Number of Adults</strong></td>
+                    <td>${payload.number_of_adults}</td>
+                </tr>
+                <tr>
+                    <td><strong>Number of Children</strong></td>
+                    <td>${payload.number_of_children}</td>
+                </tr>
+                <tr>
+                    <td><strong>Start Date</strong></td>
+                    <td>${payload.start_date}</td>
+                </tr>
+                <tr>
+                    <td><strong>Pickup Location</strong></td>
+                    <td>${payload.pickup_location}</td>
+                </tr>
+                <tr>
+                    <td><strong>Pickup Time</strong></td>
+                    <td>${payload.pickup_time}</td>
+                </tr>
+                <tr>
+                    <td><strong>Additional Condition</strong></td>
+                    <td>${payload.additional_condition}</td>
+                </tr>
+                </table>
+            </div>
+            <p>Please review the details and process the booking accordingly.</p>
+            </div>
+            <div class="footer">
+            <p>&copy; 2025 Ride Bali Explore. All Rights Reserved.</p>
+            </div>
+        </div>
+        </body>
+        </html>
+
+`;
+
+      await this.mailerService.sendMail({
+        to: 'ridebaliexplore@gmail.com',
+        subject: 'New Order Package Tour Just Received',
+        html: htmlTemplate,
+      });
+    } catch (error) {
+      console.error(`Error sending order package tour email to `, error);
       throw error;
     }
   }
