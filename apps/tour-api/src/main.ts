@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ApiModule } from './api.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import { FormatErrorInterceptor } from 'libs/helper/interceptors/exeption.interceptor';
 
 async function bootstrap() {
@@ -16,15 +16,15 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   //   app.useGlobalInterceptors(new FormatErrorInterceptor());
 
-  const configSwagger = new DocumentBuilder()
-    .setTitle('Admin Api Service')
-    .setDescription('API for Admin data CRUD')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addServer(`http://localhost:${port}`)
-    .build();
-  const document = SwaggerModule.createDocument(app, configSwagger);
-  SwaggerModule.setup('api-docs', app, document);
+  //   const configSwagger = new DocumentBuilder()
+  //     .setTitle('Admin Api Service')
+  //     .setDescription('API for Admin data CRUD')
+  //     .setVersion('1.0')
+  //     .addBearerAuth()
+  //     .addServer(`http://localhost:${port}`)
+  //     .build();
+  //   const document = SwaggerModule.createDocument(app, configSwagger);
+  //   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(port, () => {
     console.log('[REST]', `http://localhost:${port}`);
