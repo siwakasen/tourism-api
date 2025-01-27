@@ -1,7 +1,7 @@
-import { Controller, Inject, Param } from '@nestjs/common';
+import { Body, Controller, Inject, Param, Post } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserCarsService } from './user-cars.service';
-import { PaginationDto } from './user-cars.dto';
+import { PaginationDto, requestOrderCarRentalDto } from './user-cars.dto';
 import { Query, Get } from '@nestjs/common';
 
 @ApiTags('User Cars')
@@ -30,5 +30,10 @@ export class UserCarsController {
   @Get('/:id')
   public async getUserCarsById(@Param('id') id: string) {
     return await this.userCarsService.getCarsById(id);
+  }
+
+  @Post('create')
+  async createCars(@Body() body: requestOrderCarRentalDto) {
+    return await this.userCarsService.requestCarRental(body);
   }
 }

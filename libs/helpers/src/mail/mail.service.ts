@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { bookingToCustomerDto, bookingToOwnerDto } from './mail.dto';
+import {
+  bookingCarToCustomerDto,
+  bookingCarToOwnerDto,
+  bookingToCustomerDto,
+  bookingToOwnerDto,
+} from './mail.dto';
 
 @Injectable()
 export class MailService {
@@ -268,7 +273,6 @@ export class MailService {
         </div>
         </body>
         </html>
-
 `;
 
       this.mailerService.sendMail({
@@ -351,12 +355,257 @@ export class MailService {
                 <body>
                 <div class="container">
                     <div class="header">
-                    <img src="https://tour.cashtrack.my.id/public/logo-tourism.png" alt="Company Logo">
+                    <img src="https://i.postimg.cc/Y92q3RYL/logo-tourism.png" alt="Company Logo">
                     <h2>Booking Confirmation</h2>
                     </div>
                     <div class="content">
                     <p>Hello,</p>
                     <p>Thank you for booking the <strong>${payload.package_name}</strong> package. Your booking has been received, and our team will contact you shortly for further details.</p>
+                    <p>If you have any questions or need further assistance, please contact us via WhatsApp.</p>
+                    <div class="cta">
+                        <a href="https://wa.me/081338364818">Contact via WhatsApp</a>
+                    </div>
+                    </div>
+                    <div class="footer">
+                    <p>&copy; 2025 Ride Bali Explore. All Rights Reserved.</p>
+                    </div>
+                </div>
+                </body>
+                </html>
+        `;
+      this.mailerService.sendMail({
+        to: payload.email,
+        subject: 'Booking Confirmation',
+        html: htmlTemplate,
+      });
+    } catch (error) {
+      console.error(`Error sending order package tour email to `, error);
+      throw error;
+    }
+  }
+
+  async sendOrderCarRentalToOwner(payload: bookingCarToOwnerDto) {
+    try {
+      const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Booking Confirmation</title>
+        <style>
+            body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9ff;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            }
+            .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+            text-align: center;
+            padding: 20px;
+            }
+            .header img {
+            width: 80px;
+            margin-bottom: 10px;
+            }
+            .content {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            }
+            .content h1 {
+            text-align: center;
+            color: #333;
+            }
+            .table-container {
+            margin-top: 20px;
+            }
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            }
+            th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            }
+            th {
+            background-color: #fdb441;
+            color: white;
+            }
+            .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            }
+        </style>
+        </head>
+        <body>
+        <div class="container">
+            <div class="header">
+            <h2>New Booking Received</h2>
+            </div>
+            <div class="content">
+            <p>Hello,</p>
+            <p>A new car rental booking has just been made. Below are the details:</p>
+            <div class="table-container">
+                <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Car Name</strong></td>
+                    <td>${payload.car_name}</td>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>${payload.name}</td>
+                </tr>
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td>${payload.email}</td>
+                </tr>
+                <tr>
+                    <td><strong>Country of Origin</strong></td>
+                    <td>${payload.country_of_origin}</td>
+                </tr>
+                <tr>
+                    <td><strong>Phone Number</strong></td>
+                    <td>${payload.phone_number}</td>
+                </tr>
+                <tr>
+                    <td><strong>Number of Person</strong></td>
+                    <td>${payload.number_of_person}</td>
+                </tr>
+                <tr>
+                    <td><strong>Start Date</strong></td>
+                    <td>${payload.start_date}</td>
+                </tr>
+                <tr>
+                    <td><strong>End Date</strong></td>
+                    <td>${payload.end_date}</td>
+                </tr>
+                <tr>
+                    <td><strong>Pickup Location</strong></td>
+                    <td>${payload.pickup_location}</td>
+                </tr>
+                <tr>
+                    <td><strong>Pickup Time</strong></td>
+                    <td>${payload.pickup_time}</td>
+                </tr>
+                <tr>
+                    <td><strong>Additional Message</strong></td>
+                    <td>${payload.additional_message}</td>
+                </tr>
+                </table>
+            </div>
+            <p>Please review the details and process the booking accordingly.</p>
+            </div>
+            <div class="footer">
+            <p>&copy; 2025 Ride Bali Explore. All Rights Reserved.</p>
+            </div>
+        </div>
+        </body>
+        </html>
+        `;
+      this.mailerService.sendMail({
+        to: 'ridebaliexplore@gmail.com',
+        subject: 'New Order Car Rental Just Received',
+        html: htmlTemplate,
+      });
+    } catch (error) {
+      console.error(`Error sending order car rental email to `, error);
+      throw error;
+    }
+  }
+
+  async sendConfirmationCarBookingToCustomer(payload: bookingCarToCustomerDto) {
+    try {
+      const htmlTemplate = `
+            <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Booking Confirmation</title>
+                <style>
+                    body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f9f9ff;
+                    color: #000;
+                    margin: 0;
+                    padding: 0;
+                    }
+                    .container {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    background: #ffffff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    }
+                    .header {
+                    text-align: center;
+                    padding: 20px;
+                    }
+                    .header img {
+                    width: 80px;
+                    margin-bottom: 10px;
+                    }
+                    .content {
+                    font-size: 16px;
+                    color: #555;
+                    line-height: 1.6;
+                    }
+                    .content h1 {
+                    text-align: center;
+                    color: #333;
+                    }
+                    .footer {
+                    text-align: center;
+                    margin-top: 20px;
+                    font-size: 14px;
+                    color: #888;
+                    }
+                    .cta {
+                    text-align: center;
+                    margin-top: 20px;
+                    }
+                    .cta a {
+                    text-decoration: none;
+                    color: #ffffff;
+                    background-color: #25D366;
+                    padding: 12px 24px;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    display: inline-block;
+                    }
+                    .cta a:hover {
+                    background-color: #1ebe5d;
+                    }
+                </style>
+                </head>
+                <body>
+                <div class="container">
+                    <div class="header">
+                    <img src="https://i.postimg.cc/Y92q3RYL/logo-tourism.png" alt="Company Logo">
+                    <h2>Booking Confirmation</h2>
+                    </div>
+                    <div class="content">
+                    <p>Hello,</p>
+                    <p>Thank you for booking the <strong>${payload.car_name}</strong> car. Your booking has been received, and our team will contact you shortly for further details.</p>
                     <p>If you have any questions or need further assistance, please contact us via WhatsApp.</p>
                     <div class="cta">
                         <a href="https://wa.me/081338364818">Contact via WhatsApp</a>
