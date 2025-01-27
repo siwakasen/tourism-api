@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from 'libs/entities/tour_admin/admin.entity';
-import { Repository, DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   LoginReqDto,
   RegisterDto,
@@ -24,7 +24,6 @@ import { FormatErrorInterceptor } from 'libs/helpers/interceptors/exeption.inter
 @UseInterceptors(FormatErrorInterceptor)
 export class AuthService {
   constructor(
-    private readonly dataSource: DataSource,
     private readonly redisService: AuthRedisService,
     private readonly mailService: MailService,
   ) {}
@@ -116,7 +115,7 @@ export class AuthService {
 
     const hashedEmail = this.helper.generateResetPwToken(email);
     const url = `${process.env.FRONTEND_URL}/reset-password/` + hashedEmail;
-    await this.mailService.requestResetPassword({
+    this.mailService.requestResetPassword({
       email: email,
       url: url,
     });
@@ -136,7 +135,6 @@ export class AuthService {
 
     try {
       const tokenData = await this.helper.decode(token);
-      console.log(tokenData);
       if (!tokenData) {
         throw new HttpException('Token Invalid', HttpStatus.BAD_REQUEST);
       }
@@ -144,13 +142,13 @@ export class AuthService {
       const user = await this.repository.findOne({
         where: { email: tokenData['email'] },
       });
-
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      console.log(password);
       const hashedPassword = await this.helper.encodePassword(password);
       user.password = hashedPassword;
+
+      user.lastUpdatePassword = new Date();
       user.save();
       return {
         user: user,
@@ -158,7 +156,14 @@ export class AuthService {
         message: 'Success change password',
       };
     } catch (e) {
-      throw new HttpException('Token Invalid', HttpStatus.BAD_REQUEST, e);
+      throw new HttpException(
+        {
+          message: [e.message || 'Failed to update password'],
+          error: e.message || 'Internal server error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
