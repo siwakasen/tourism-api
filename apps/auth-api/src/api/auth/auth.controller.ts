@@ -48,10 +48,8 @@ export class AuthController {
     description: 'Token Invalid OR password not strong enough',
   })
   @Post('reset-password')
-  private async resetPassword(
-    @Body() body: ResetPasswordDto,
-  ): Promise<void | never> {
-    await this.service.changePassword(body);
+  private async resetPassword(@Body() body: ResetPasswordDto) {
+    return await this.service.changePassword(body);
   }
 
   @ApiResponse({

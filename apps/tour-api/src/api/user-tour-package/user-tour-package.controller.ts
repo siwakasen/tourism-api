@@ -1,7 +1,18 @@
-import { Controller, Inject, Get, Query, Param } from '@nestjs/common';
+import {
+  Controller,
+  Inject,
+  Get,
+  Query,
+  Param,
+  Body,
+  Post,
+} from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserTourPackageService } from './user-tour-package.service';
-import { PaginationDto } from './user-tour-package.dto';
+import {
+  PaginationDto,
+  requestOrderPackageTourDto,
+} from './user-tour-package.dto';
 
 @ApiTags('User Tour Package')
 @Controller('/user-tour-packages')
@@ -29,5 +40,10 @@ export class UserTourPackageController {
   @Get('/:id')
   public async getUserTourPackageById(@Param('id') id: string) {
     return await this.userTourPackageService.getTourPackageById(id);
+  }
+
+  @Post('create')
+  async createTourPackage(@Body() body: requestOrderPackageTourDto) {
+    return await this.userTourPackageService.requestOrder(body);
   }
 }
