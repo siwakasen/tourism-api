@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNumber, IsString, IsOptional, IsEmail } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsEmail, Min } from 'class-validator';
 
 export class PaginationDto {
   @ApiProperty({ default: 1 })
@@ -44,6 +44,7 @@ export class requestOrderCarRentalDto {
 
   @ApiProperty()
   @IsNumber()
+  @Min(1)
   public readonly number_of_person: number;
 
   @ApiProperty()

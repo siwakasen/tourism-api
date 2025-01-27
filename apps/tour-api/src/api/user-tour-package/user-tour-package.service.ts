@@ -117,7 +117,10 @@ export class UserTourPackageService {
         email: payload.email,
         country_of_origin: payload.country_of_origin ?? '-',
         phone_number: payload.phone_number ?? '-',
-        number_of_adults: payload.number_of_person[0] ?? 0,
+        number_of_adults:
+          (payload.number_of_person[0] ?? payload.number_of_person[0] < 1)
+            ? 1
+            : payload.number_of_person[0],
         number_of_children: payload.number_of_person[1] ?? 0,
         start_date: payload.start_date,
         pickup_location: payload.pickup_location,
@@ -127,6 +130,7 @@ export class UserTourPackageService {
 
       this.mailService.sendConfirmationBookingToCustomer({
         package_name: result.package_name,
+        name: payload.name,
         email: payload.email,
       });
 

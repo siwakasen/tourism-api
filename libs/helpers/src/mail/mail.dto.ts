@@ -14,6 +14,7 @@ export class bookingToOwnerDto {
 
 export class bookingToCustomerDto {
   public readonly package_name: string;
+  public readonly name: string;
   public readonly email: string;
 }
 
@@ -33,5 +34,6 @@ export class bookingCarToOwnerDto {
 
 export class bookingCarToCustomerDto {
   public readonly car_name: string;
+  public readonly name: string;
   public readonly email: string;
 }

@@ -111,7 +111,7 @@ export class UserCarsService {
         .where('cars.id = :id', { id: car_id })
         .getOne();
       if (!car) {
-        throw new Error('Tour package not found');
+        throw new Error('Car not found');
       }
 
       this.mailService.sendOrderCarRentalToOwner({
@@ -120,7 +120,10 @@ export class UserCarsService {
         email: payload.email,
         country_of_origin: payload.country_of_origin ?? '-',
         phone_number: payload.phone_number ?? '-',
-        number_of_person: payload.number_of_person ?? 1,
+        number_of_person:
+          (payload.number_of_person ?? payload.number_of_person < 1)
+            ? 1
+            : payload.number_of_person,
         pickup_location: payload.pickup_location,
         start_date: payload.start_date,
         end_date: payload.end_date,
@@ -130,6 +133,7 @@ export class UserCarsService {
 
       this.mailService.sendConfirmationCarBookingToCustomer({
         car_name: `${car.brand.brand_name} ${car.car_name}`,
+        name: payload.name,
         email: payload.email,
       });
       return {
