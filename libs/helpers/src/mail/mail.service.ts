@@ -5,6 +5,7 @@ import {
   bookingCarToOwnerDto,
   bookingToCustomerDto,
   bookingToOwnerDto,
+  sentEmailContactDto,
 } from './mail.dto';
 
 @Injectable()
@@ -621,6 +622,121 @@ export class MailService {
       this.mailerService.sendMail({
         to: payload.email,
         subject: 'Booking Confirmation',
+        html: htmlTemplate,
+      });
+    } catch (error) {
+      console.error(`Error sending order package tour email to `, error);
+      throw error;
+    }
+  }
+
+  async sentContact(payload: sentEmailContactDto) {
+    try {
+      const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contact Form Submission</title>
+        <style>
+            body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9ff;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            }
+            .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+            text-align: center;
+            padding: 10px;
+            background-color: #dff6f0;
+            border-radius: 8px 8px 0 0;
+            }
+            .header h2 {
+            margin: 0;
+            color: #333;
+            }
+            .content {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            padding: 20px;
+            }
+            .table-container {
+            margin-top: 10px;
+            }
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            }
+            th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            }
+            th {
+            background-color: #008cba;
+            color: white;
+            }
+            .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            }
+        </style>
+        </head>
+        <body>
+        <div class="container">
+            <div class="header">
+            <h2>New Contact Form Submission</h2>
+            </div>
+            <div class="content">
+            <p>Hello,</p>
+            <p>You have received a new message through the contact form. Here are the details:</p>
+            <div class="table-container">
+                <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>${payload.name}</td>
+                </tr>
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td>${payload.email}</td>
+                </tr>
+                <tr>
+                    <td><strong>Message</strong></td>
+                    <td>${payload.message}</td>
+                </tr>
+                </table>
+            </div>
+            <p>Please review and respond accordingly.</p>
+            </div>
+            <div class="footer">
+            <p>&copy; 2025 Ride Bali Explore. All Rights Reserved.</p>
+            </div>
+        </div>
+        </body>
+        </html>
+
+        `;
+      this.mailerService.sendMail({
+        to: 'ridebaliexplore@gmail.com',
+        subject: payload.subject,
         html: htmlTemplate,
       });
     } catch (error) {

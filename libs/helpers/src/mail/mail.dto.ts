@@ -37,3 +37,10 @@ export class bookingCarToCustomerDto {
   public readonly name: string;
   public readonly email: string;
 }
+
+export class sentEmailContactDto {
+  public readonly name: string;
+  public readonly subject: string;
+  public readonly email: string;
+  public readonly message: string;
+}
