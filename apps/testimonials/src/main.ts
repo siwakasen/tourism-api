@@ -15,7 +15,6 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   //   app.useGlobalInterceptors(new FormatErrorInterceptor());
-
   const configSwagger = new DocumentBuilder()
     .setTitle('Admin Api Service')
     .setDescription('API for Admin data CRUD')
@@ -28,7 +27,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(port, () => {
-    console.log('[Tourism Service]', `http://localhost:${port}`);
+    console.log('[Testimonials Service]', `http://localhost:${port}`);
   });
 }
 

@@ -48,6 +48,21 @@
       "compilerOptions": {
         "tsConfigPath": "libs/entities/tsconfig.lib.json"
       }
+    },
+    "testimonials": {
+      "type": "application",
+      "root": "apps/testimonials/src",
+      "entryFile": "main",
+      "sourceRoot": "apps/testimonials/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/testimonials/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "common/envs/*.env",
+            "outDir": "dist/apps/testimonials/src/common/helper"
+          }
+        ]
+      }
     }
   }
 }

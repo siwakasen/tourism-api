@@ -41,7 +41,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(port, () => {
-    console.log('[REST]', `http://localhost:${port}`);
+    console.log('[Auth Service]', `http://localhost:${port}`);
   });
 
   await appGRPC.listen();
