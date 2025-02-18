@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
   Inject,
+  Param,
   Post,
   Query,
   UploadedFile,
@@ -43,6 +45,16 @@ export class TestimonialsController {
   @Get('')
   public async getAllTestimonials(@Query() query: PaginationDto) {
     return await this.testimonialsService.getAllTestimonials(query);
+  }
+
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  @UseGuards(AuthGuard('admin'))
+  @Get('/:id')
+  public async getTestimonialsById(@Param('id') id: string) {
+    return await this.testimonialsService.getTestimonialById(id);
   }
 
   @ApiResponse({
@@ -96,5 +108,69 @@ export class TestimonialsController {
       };
     }
     return await this.testimonialsService.createTestimonial(body, image);
+  }
+
+  @ApiResponse({
+    status: 201,
+    description: 'Successfuly create data testimonials',
+  })
+  @UseGuards(AuthGuard('admin'))
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './dist/apps/testimonials/public/testimonials-images',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        // Validate file type
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(
+            new HttpException(
+              {
+                message: ['Invalid file type. Only images are allowed.'],
+                error: 'Not Acceptable',
+                statusCode: HttpStatus.NOT_ACCEPTABLE,
+              },
+              HttpStatus.NOT_ACCEPTABLE,
+            ),
+            false,
+          );
+        }
+        cb(null, true); // Accept the file if valid
+      },
+    }),
+  )
+  @ApiBody({
+    type: CreateUpdateTestimonialsDto,
+  })
+  @Post('/:id')
+  public async updateTestimonial(
+    @Param('id') id: string,
+    @Body() body: CreateUpdateTestimonialsDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    if (!image) {
+      return {
+        message: 'Please upload an image',
+        error: 'Bad Request',
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+    }
+    return await this.testimonialsService.updateTestimonial(id, body, image);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Successfuly delete data testimonials',
+  })
+  @UseGuards(AuthGuard('admin'))
+  @Delete('/:id')
+  public async deleteTestimonial(@Param('id') id: string) {
+    return await this.testimonialsService.deleteTestimonial(id);
   }
 }

@@ -63,6 +63,15 @@
           }
         ]
       }
+    },
+    "drivers": {
+      "type": "application",
+      "root": "apps/drivers",
+      "entryFile": "main",
+      "sourceRoot": "apps/drivers/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/drivers/tsconfig.app.json"
+      }
     }
   }
 }
