@@ -12,6 +12,27 @@ export class TestimonialsService {
   @InjectRepository(Testimonials)
   private readonly testimonialRepository: Repository<Testimonials>;
 
+  public async getAllTestimonialsForPublic(){
+    try {
+      const queryBuilder = this.testimonialRepository
+        .createQueryBuilder('testimonials')
+        .orderBy('testimonials.created_at', 'DESC');
+
+      const [result] = await queryBuilder.getManyAndCount();
+      return {
+        data: result
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: [error.message || 'Internal Server Error'],
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
   public async getAllTestimonials(paginationDto: PaginationDto) {
     try {
       const { page = 1, limit = 10, search = '' } = paginationDto;

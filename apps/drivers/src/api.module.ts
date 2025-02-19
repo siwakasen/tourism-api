@@ -5,7 +5,7 @@ import { getEnvPath } from './common/helper/env.helper';
 import { TypeOrmConfigService } from './shared/typeorm/typeorm.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { DriversModule } from './drivers.module';
+import { DriversModule } from './api/drivers.module';
 const envFilePath: string = getEnvPath(`${__dirname}/common/helper`);
 console.log('envFilePath:', getEnvPath(`${__dirname}`));
 @Module({

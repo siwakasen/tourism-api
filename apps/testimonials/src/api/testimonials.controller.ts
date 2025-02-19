@@ -35,6 +35,21 @@ export class TestimonialsController {
 
   @ApiResponse({
     status: 200,
+    description: 'Successfuly get data testimonials for public',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  @Get('user')
+  public async getAllTestimonialsForPublic() {
+    console.log('GET ALL TESTIMONIALS [PUBLIC]')
+    return await this.testimonialsService.getAllTestimonialsForPublic();
+  }
+
+
+  @ApiResponse({
+    status: 200,
     description: 'Successfuly get data testimonials',
   })
   @ApiResponse({
