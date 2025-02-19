@@ -21,7 +21,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addServer(`http://localhost:${port}`)
-    .addServer(`https://tour.cashtrack.my.id`)
+    .addServer(`https://testi.cashtrack.my.id`)
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api-docs', app, document);

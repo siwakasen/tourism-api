@@ -44,6 +44,7 @@ export class TestimonialsController {
   @UseGuards(AuthGuard('admin'))
   @Get('')
   public async getAllTestimonials(@Query() query: PaginationDto) {
+    console.log('GET ALL TESTIMONIALS')
     return await this.testimonialsService.getAllTestimonials(query);
   }
 
@@ -54,6 +55,7 @@ export class TestimonialsController {
   @UseGuards(AuthGuard('admin'))
   @Get('/:id')
   public async getTestimonialsById(@Param('id') id: string) {
+    console.log('GET TESTIMONIALS BY ID')
     return await this.testimonialsService.getTestimonialById(id);
   }
 
@@ -100,6 +102,7 @@ export class TestimonialsController {
     @Body() body: CreateUpdateTestimonialsDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
+    console.log('CREATE TESTIMONIAL')
     if (!image) {
       return {
         message: 'Please upload an image',
@@ -154,6 +157,7 @@ export class TestimonialsController {
     @Body() body: CreateUpdateTestimonialsDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
+    console.log('UPDATE TESTIMONIAL')
     if (!image) {
       return {
         message: 'Please upload an image',
@@ -171,6 +175,7 @@ export class TestimonialsController {
   @UseGuards(AuthGuard('admin'))
   @Delete('/:id')
   public async deleteTestimonial(@Param('id') id: string) {
+    console.log('DELETE TESTIMONIAL')
     return await this.testimonialsService.deleteTestimonial(id);
   }
 }

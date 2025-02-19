@@ -23,6 +23,7 @@
     "test:e2e": "jest --config ./apps/tourweb_be/test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs",
     "start:testimonials:dev": "cross-env NODE_ENV=development nest start testimonials --watch",
+    "start:drivers:dev": "cross-env NODE_ENV=development nest start drivers --watch",
     "start:debug-testimonials:dev": "cross-env NODE_ENV=development nest start testimonials --debug --watch",
     "start:tour-api:dev": "cross-env NODE_ENV=development nest start tour-api --watch",
     "start:debug-tour:dev": "cross-env NODE_ENV=development nest start tour-api --debug --watch",
