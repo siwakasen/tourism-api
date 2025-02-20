@@ -19,5 +19,4 @@ COPY --from=builder app/node_modules ./node_modules
 COPY /dist ./dist
 COPY /contract ./contract
 
-EXPOSE 3002
-CMD ["node", "dist/apps/testimonials/src/main"]
+CMD ["node", "dist/apps/drivers/src/main"]
