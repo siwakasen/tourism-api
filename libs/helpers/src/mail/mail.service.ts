@@ -364,7 +364,7 @@ export class MailService {
                     <p>Thank you for booking the <strong>${payload.package_name}</strong> package. Your booking has been received, and our team will contact you shortly for further details.</p>
                     <p>If you have any questions or need further assistance, please contact us via WhatsApp.</p>
                     <div class="cta">
-                        <a href="https://api.whatsapp.com/send/?phone=6281338364818&text=Hello%2C+my+name+is+${payload.name}.+I+just+booked+for+${payload.package_name}.&type=phone_number&app_absent=0">Contact via WhatsApp</a>
+                        <a href="https://api.whatsapp.com/send/?phone=6281990104720&text=Hello%2C%0A%0AI+just+booked+for+%2A${payload.package_name}%2A.%0AName+of+booker%3A%20%2A${payload.name}%2A.%0AI+look+forward+to+your+confirmation.%0A%0AThank+you&type=phone_number&app_absent=0">Contact via WhatsApp</a>
                     </div>
                     </div>
                     <div class="footer">
@@ -609,7 +609,7 @@ export class MailService {
                     <p>Thank you for booking the <strong>${payload.car_name}</strong> car. Your booking has been received, and our team will contact you shortly for further details.</p>
                     <p>If you have any questions or need further assistance, please contact us via WhatsApp.</p>
                     <div class="cta">
-                        <a href="https://api.whatsapp.com/send/?phone=6281338364818&text=Hello%2C+my+name+is+${payload.name}.+I+just+booked+for+${payload.car_name}.&type=phone_number&app_absent=0">Contact via WhatsApp</a>
+                        <a href="https://api.whatsapp.com/send/?phone=6281990104720&text=Hello%2C%0A%0AI+just+booked+for+%2A${payload.car_name}%2A.%0AName+of+booker%3A%20%2A${payload.name}%2A.%0AI+look+forward+to+your+confirmation.%0A%0AThank+you&type=phone_number&app_absent=0">Contact via WhatsApp</a>
                     </div>
                     </div>
                     <div class="footer">

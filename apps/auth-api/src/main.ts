@@ -35,13 +35,13 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addServer(`http://localhost:${port}`)
-    .addServer(`https://tourism-api.cashtrack.my.id`)
+    .addServer(`https://auth.cashtrack.my.id`)
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(port, () => {
-    console.log('[REST]', `http://localhost:${port}`);
+    console.log('[Auth Service]', `http://localhost:${port}`);
   });
 
   await appGRPC.listen();

@@ -15,20 +15,19 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   //   app.useGlobalInterceptors(new FormatErrorInterceptor());
-
   const configSwagger = new DocumentBuilder()
     .setTitle('Admin Api Service')
     .setDescription('API for Admin data CRUD')
     .setVersion('1.0')
     .addBearerAuth()
     .addServer(`http://localhost:${port}`)
-    .addServer(`https://tour.cashtrack.my.id`)
+    .addServer(`https://drivers.cashtrack.my.id`)
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(port, () => {
-    console.log('[Tourism Service]', `http://localhost:${port}`);
+    console.log('[Drivers Service]', `http://localhost:${port}`);
   });
 }
 
