@@ -28,6 +28,7 @@ export class CreateUpdateTestimonialsDto {
     type: 'string',
     format: 'binary',
     description: 'Image to be uploaded',
+    required: false,
   })
   public readonly image: any;
 

@@ -159,12 +159,12 @@ export class TestimonialsService {
   public async updateTestimonial(
     id: string,
     payload: CreateUpdateTestimonialsDto,
-    image: Express.Multer.File,
+    image?: Express.Multer.File,
   ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
+    console.log("test1111");
     try {
       const testimonial: Testimonials =
         await this.testimonialRepository.findOneBy({
@@ -175,7 +175,7 @@ export class TestimonialsService {
         throw new Error('Testimonial not found');
       }
 
-      if (testimonial.image) {
+      if (image && testimonial.image) {
         const disPath = path.join(
           './dist/apps/testimonials/public/testimonials-images',
           testimonial.image,
@@ -184,12 +184,15 @@ export class TestimonialsService {
           fs.unlinkSync(disPath);
           console.log('Image deleted successfully');
         }
+        this.testimonialRepository.merge(testimonial, {
+          ...payload,
+          image: image.filename,
+        });
+      }else{
+          this.testimonialRepository.merge(testimonial, payload);
       }
 
-      this.testimonialRepository.merge(testimonial, {
-        ...payload,
-        image: image.filename,
-      });
+
 
       await queryRunner.manager.save(testimonial);
       await queryRunner.commitTransaction();

@@ -145,22 +145,27 @@ export class TestimonialsController {
         },
       }),
       fileFilter: (req, file, cb) => {
-        // Validate file type
+        // If no file is provided, accept the request
+        if (!file) {
+            return cb(null, true);
+        }
+
+        // Validate file type if file exists
         if (!file.mimetype.startsWith('image/')) {
-          return cb(
-            new HttpException(
-              {
-                message: ['Invalid file type. Only images are allowed.'],
-                error: 'Not Acceptable',
-                statusCode: HttpStatus.NOT_ACCEPTABLE,
-              },
-              HttpStatus.NOT_ACCEPTABLE,
-            ),
-            false,
-          );
+            return cb(
+                new HttpException(
+                    {
+                        message: ['Invalid file type. Only images are allowed.'],
+                        error: 'Not Acceptable',
+                        statusCode: HttpStatus.NOT_ACCEPTABLE,
+                    },
+                    HttpStatus.NOT_ACCEPTABLE,
+                ),
+                false,
+            );
         }
         cb(null, true); // Accept the file if valid
-      },
+    },
     }),
   )
   @ApiBody({
@@ -170,17 +175,10 @@ export class TestimonialsController {
   public async updateTestimonial(
     @Param('id') id: string,
     @Body() body: CreateUpdateTestimonialsDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() image?: Express.Multer.File,
   ) {
     console.log('UPDATE TESTIMONIAL')
-    if (!image) {
-      return {
-        message: 'Please upload an image',
-        error: 'Bad Request',
-        statusCode: HttpStatus.BAD_REQUEST,
-      };
-    }
-    return await this.testimonialsService.updateTestimonial(id, body, image);
+    return await this.testimonialsService.updateTestimonial(id, body, image? image : null);
   }
 
   @ApiResponse({

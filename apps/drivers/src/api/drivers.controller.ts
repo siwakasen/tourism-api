@@ -127,22 +127,27 @@ export class DriversController {
             },
           }),
           fileFilter: (req, file, cb) => {
-            // Validate file type
+            // If no file is provided, accept the request
+            if (!file) {
+                return cb(null, true);
+            }
+
+            // Validate file type if file exists
             if (!file.mimetype.startsWith('image/')) {
-              return cb(
-                new HttpException(
-                  {
-                    message: ['Invalid file type. Only images are allowed.'],
-                    error: 'Not Acceptable',
-                    statusCode: HttpStatus.NOT_ACCEPTABLE,
-                  },
-                  HttpStatus.NOT_ACCEPTABLE,
-                ),
-                false,
-              );
+                return cb(
+                    new HttpException(
+                        {
+                            message: ['Invalid file type. Only images are allowed.'],
+                            error: 'Not Acceptable',
+                            statusCode: HttpStatus.NOT_ACCEPTABLE,
+                        },
+                        HttpStatus.NOT_ACCEPTABLE,
+                    ),
+                    false,
+                );
             }
             cb(null, true); // Accept the file if valid
-          },
+        },
         }),
       )
       @ApiBody({
@@ -152,17 +157,10 @@ export class DriversController {
       public async updateDriver(
         @Param('id') id: string,
         @Body() body: CreateUpdateDriversDto,
-        @UploadedFile() photo_profile: Express.Multer.File,
+        @UploadedFile() photo_profile?: Express.Multer.File,
       ) {
         console.log('UPDATE Driver')
-        if (!photo_profile) {
-          return {
-            message: 'Please upload an image',
-            error: 'Bad Request',
-            statusCode: HttpStatus.BAD_REQUEST,
-          };
-        }
-        return await this.driversService.updateDriver(id, body, photo_profile);
+        return await this.driversService.updateDriver(id, body, photo_profile? photo_profile : null);
       }
 
       @ApiResponse({
