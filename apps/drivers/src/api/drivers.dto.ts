@@ -29,6 +29,7 @@ export class CreateUpdateDriversDto{
         type: 'string',
         format: 'binary',
         description: 'Image to be uploaded',
+        required: false,
       })
       public readonly photo_profile: any;
 

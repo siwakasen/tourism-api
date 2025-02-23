@@ -158,7 +158,7 @@ export class DriversService {
       public async updateDriver(
         id:string,
         payload:CreateUpdateDriversDto,
-        photo_profile:Express.Multer.File
+        photo_profile?:Express.Multer.File
       ){
         const queryRunner = this.dataSource.createQueryRunner();
             await queryRunner.connect();
@@ -174,7 +174,7 @@ export class DriversService {
                 throw new Error('Driver not found');
               }
 
-              if (driver.photo_profile) {
+              if (photo_profile && driver.photo_profile) {
                 const disPath = path.join(
                   './dist/apps/drivers/public/drivers-images',
                   driver.photo_profile,
@@ -183,12 +183,16 @@ export class DriversService {
                   fs.unlinkSync(disPath);
                   console.log('Image deleted successfully');
                 }
+                this.repository.merge(driver, {
+                  ...payload,
+                  photo_profile: photo_profile.filename,
+                });
+              }else{
+                this.repository.merge(driver, {
+                  ...payload,
+                });
               }
 
-              this.repository.merge(driver, {
-                ...payload,
-                photo_profile: photo_profile.filename,
-              });
 
               await queryRunner.manager.save(driver);
               await queryRunner.commitTransaction();
