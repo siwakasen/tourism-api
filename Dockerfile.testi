@@ -19,7 +19,7 @@ ENV SHELL=/bin/bash
 WORKDIR /app
 COPY --from=builder tmp/node_modules ./node_modules
 COPY --from=builder tmp/dist ./dist
-RUN --from=builder rm -rf tmp
+RUN  rm -rf /tmp
 
 COPY /contract ./contract
 
