@@ -5,6 +5,8 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package.json .
 RUN npm install --production
+RUN npm install -g pnpm
+RUN pnpm build:testimonials:prod
 
 # Stage 2: Final runtime image
 FROM node:22-alpine
@@ -16,7 +18,8 @@ ENV SHELL=/bin/bash
 
 WORKDIR /app
 COPY --from=builder app/node_modules ./node_modules
-COPY /dist ./dist
+COPY --from=builder app/dist ./dist
+
 COPY /contract ./contract
 
 EXPOSE 3002
