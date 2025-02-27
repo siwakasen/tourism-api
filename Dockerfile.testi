@@ -2,8 +2,8 @@
 # Stage 1: Build dependencies
 FROM node:22-alpine AS builder
 
-WORKDIR /app
-COPY package.json .
+WORKDIR /tmp
+COPY . .
 RUN npm install --production
 RUN npm install -g pnpm
 RUN pnpm build:testimonials:prod
@@ -17,8 +17,9 @@ RUN apk add --no-cache bash
 ENV SHELL=/bin/bash
 
 WORKDIR /app
-COPY --from=builder app/node_modules ./node_modules
-COPY --from=builder app/dist ./dist
+COPY --from=builder tmp/node_modules ./node_modules
+COPY --from=builder tmp/dist ./dist
+RUN --from=builder rm -rf tmp
 
 COPY /contract ./contract
 
