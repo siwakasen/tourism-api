@@ -1,9 +1,11 @@
 # Stage 1: Build dependencies
 FROM node:22-alpine AS builder
 
-WORKDIR /app
-COPY package.json .
-RUN npm install --production
+WORKDIR /tmp
+COPY . .
+RUN npm install -g pnpm
+RUN pnpm install
+RUN pnpm build:auth:prod
 
 # Stage 2: Final runtime image
 FROM node:22-alpine
@@ -13,9 +15,10 @@ FROM node:22-alpine
 RUN apk add --no-cache bash
 
 WORKDIR /app
-COPY --from=builder app/node_modules ./node_modules
-COPY /dist/apps/auth-api ./auth-api
+COPY --from=builder tmp/node_modules ./node_modules
+COPY --from=builder tmp/dist/apps/auth-api ./auth-api
 COPY /contract /app/contract
+RUN rm -rf /tmp
 
 EXPOSE 3001
 CMD ["node", "auth-api/src/main"]
