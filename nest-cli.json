@@ -63,6 +63,21 @@
           }
         ]
       }
+    },
+    "expense-service": {
+      "type": "application",
+      "root": "apps/expense-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/expense-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/expense-service/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "common/envs/*.env",
+            "outDir": "dist/apps/expense-service/src/common/helper"
+          }
+        ]
+      }
     }
   }
 }
