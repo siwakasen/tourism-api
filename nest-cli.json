@@ -10,32 +10,32 @@
   "monorepo": true,
   "root": "./apps",
   "projects": {
-    "tour-api": {
+    "tour-package-service": {
       "type": "application",
-      "root": "apps/tour-api/src",
+      "root": "apps/tour-package-service/src",
       "entryFile": "main",
-      "sourceRoot": "apps/tour-api/src",
+      "sourceRoot": "apps/tour-package-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/tour-api/tsconfig.app.json",
+        "tsConfigPath": "apps/tour-package-service/tsconfig.app.json",
         "assets": [
           {
             "include": "common/envs/*.env",
-            "outDir": "dist/apps/tour-api/src/common/helper"
+            "outDir": "dist/apps/tour-package-service/src/common/helper"
           }
         ]
       }
     },
-    "auth-api": {
+    "auth-service": {
       "type": "application",
-      "root": "apps/auth-api/src",
+      "root": "apps/auth-service/src",
       "entryFile": "main",
-      "sourceRoot": "apps/auth-api/src",
+      "sourceRoot": "apps/auth-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/auth-api/tsconfig.app.json",
+        "tsConfigPath": "apps/auth-service/tsconfig.app.json",
         "assets": [
           {
             "include": "common/envs/*.env",
-            "outDir": "dist/apps/auth-api/src/common/helper"
+            "outDir": "dist/apps/auth-service/src/common/helper"
           }
         ]
       }
@@ -47,6 +47,21 @@
       "sourceRoot": "libs/entities/src",
       "compilerOptions": {
         "tsConfigPath": "libs/entities/tsconfig.lib.json"
+      }
+    },
+    "rent-car-service": {
+      "type": "application",
+      "root": "apps/rent-car-service/src",
+      "entryFile": "main",
+      "sourceRoot": "apps/rent-car-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rent-car-service/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "common/envs/*.env",
+            "outDir": "dist/apps/rent-car-service/src/common/helper"
+          }
+        ]
       }
     }
   }

@@ -27,23 +27,29 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Prerequisites
-### 1.  [Node.js](https://nodejs.org/) runtime environtment
-### 2.  [pnpm](https://pnpm.io/installation)
+
+### 1. [Node.js](https://nodejs.org/) runtime environtment
+
+### 2. [pnpm](https://pnpm.io/installation)
+
     npm i -g pnpm
+
 ### 3. PostgreSQL
+
 #### Use your local machine as the host:
+
 ```bash
 
 ```
 
 ####Use docker & docker-compose (optional)
+
 1. Follow docker installation [here](https://docs.docker.com/get-started/get-docker/) base on your system.
 2. After installation, make sure if docker and docker-compose are installed
    ```bash
    docker -v
    docker-compose -v
    ```
-
 
 ## Project setup
 
@@ -52,26 +58,33 @@
 ```
 
 ## Database Setup
+
 #### PSQL on host machine:
+
 ```bash
 
 ```
+
 #### PSQL using docker compose:
+
 ```bash
  docker compose up -d
 ```
+
 if u done using it:
+
 ```bash
  docker compose down
 ```
+
 ## Compile and run the project
 
 ```bash
 # development
- pnpm start:tour-api:dev
+ pnpm start:tour-package-service:dev
 
 # watch mode
- pnpm start:tour-api:staging
+ pnpm start:tour-package-service:staging
 
 # production mode
  pnpm run start:prod
@@ -89,11 +102,14 @@ if u done using it:
 # test coverage
  pnpm run test:cov
 ```
+
 ## Build app
+
 ```bash
 # build dist
-pnpm build:tour-api
+pnpm build:tour-package-service
 ```
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
@@ -134,11 +150,11 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-
 ## STRUKTUR FOLDER
+
 ```
 apps/
-└── tour-api/
+└── tour-package-service/
     ├── src/
     │   ├── api/
     │   │   ├── auth/
