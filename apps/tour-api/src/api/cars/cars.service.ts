@@ -22,7 +22,6 @@ export class CarsService {
       const { page = 1, limit = 10, search = '' } = paginationDto;
       const queryBuilder = this.repository
         .createQueryBuilder('cars')
-        .leftJoinAndSelect('cars.brand', 'brand.id')
         .orderBy('cars.created_at', 'DESC');
 
       const conditions = [];
@@ -69,9 +68,7 @@ export class CarsService {
 
   public async getCarById(id: string) {
     try {
-      const queryBuilder = this.repository
-        .createQueryBuilder('cars')
-        .leftJoinAndSelect('cars.brand', 'brand.id');
+      const queryBuilder = this.repository.createQueryBuilder('cars');
 
       const car = await queryBuilder.where('cars.id = :id', { id }).getOne();
 
@@ -110,16 +107,8 @@ export class CarsService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const brand = await queryRunner.manager.findOne('brands', {
-        where: { id: payload.brand_id },
-      });
-
-      if (!brand) {
-        throw new Error('Brand not found');
-      }
       const car: Cars = this.repository.create({
         ...payload,
-        brand,
       });
 
       await queryRunner.manager.save(car);
@@ -128,22 +117,11 @@ export class CarsService {
       return {
         data: {
           ...car,
-          brand,
         },
         message: 'Car created successfully',
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      if (error.message === 'Brand not found') {
-        throw new HttpException(
-          {
-            message: ['Brand not found'],
-            error: 'Brand not found',
-            statusCode: HttpStatus.NOT_FOUND,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
       throw new HttpException(
         {
           message: [error.message || 'Failed to create new car'],
@@ -222,14 +200,6 @@ export class CarsService {
         throw new Error('Car not found');
       }
 
-      const brand = await queryRunner.manager.findOne('brands', {
-        where: { id: payload.brand_id },
-      });
-
-      if (!brand) {
-        throw new Error('Brand not found');
-      }
-
       this.repository.merge(car, payload);
 
       await queryRunner.manager.save(car);
@@ -238,7 +208,6 @@ export class CarsService {
       return {
         data: {
           ...car,
-          brand,
         },
         message: 'Car updated successfully',
       };
@@ -249,16 +218,6 @@ export class CarsService {
           {
             message: ['Car not found'],
             error: 'Car not found',
-            statusCode: HttpStatus.NOT_FOUND,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      if (error.message === 'Brand not found') {
-        throw new HttpException(
-          {
-            message: ['Brand not found'],
-            error: 'Brand not found',
             statusCode: HttpStatus.NOT_FOUND,
           },
           HttpStatus.NOT_FOUND,

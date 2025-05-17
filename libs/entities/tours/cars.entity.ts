@@ -9,27 +9,15 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Brands } from './brands.entity';
 
 @Entity('cars')
 export class Cars {
   @ApiProperty({
-    description: 'The unique identifier for the car brand',
+    description: 'The unique identifier for the car',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @ApiProperty({
-    description: 'The identifier of the car brand',
-    example: '550e8400-e29b-41d4-a716-446655440000',
-  })
-  @ManyToOne(() => Brands, (brand) => brand.id, {
-    onDelete: 'CASCADE',
-    nullable: false,
-  })
-  @JoinColumn({ name: 'brand_id' })
-  brand: Brands;
 
   @ApiProperty({
     description: 'The name of the car',

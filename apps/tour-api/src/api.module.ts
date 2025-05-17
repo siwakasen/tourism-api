@@ -5,7 +5,6 @@ import { getEnvPath } from './common/helper/env.helper';
 import { TypeOrmConfigService } from './shared/typeorm/typeorm.service';
 import { TourPackageModule } from './api/tour-package/tour-package.module';
 import { CarsModule } from './api/cars/cars.module';
-import { BrandsModule } from './api/brands/brands.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserCarsModule } from './api/user-cars/user-cars.module';
@@ -27,7 +26,6 @@ console.log('envFilePath:', getEnvPath(`${__dirname}`));
     }),
     TourPackageModule,
     CarsModule,
-    BrandsModule,
     UserCarsModule,
     UserTourPackageModule,
     ContactModule,

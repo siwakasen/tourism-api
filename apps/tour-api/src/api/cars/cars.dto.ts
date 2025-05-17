@@ -41,10 +41,6 @@ export class CreateUpdateCarsDto {
 
   @ApiProperty()
   @IsString()
-  public readonly brand_id: string;
-
-  @ApiProperty()
-  @IsString()
   public readonly description: string;
 
   @ApiProperty()

@@ -17,7 +17,6 @@ export class UserCarsService {
       const { page = 1, limit = 10, search = '' } = paginationDto;
       const queryBuilder = this.repository
         .createQueryBuilder('cars')
-        .leftJoinAndSelect('cars.brand', 'brand.id')
         .orderBy('cars.created_at', 'DESC');
 
       const conditions = ['cars.status = true'];
@@ -64,9 +63,7 @@ export class UserCarsService {
 
   public async getCarsById(id: string) {
     try {
-      const queryBuilder = this.repository
-        .createQueryBuilder('cars')
-        .leftJoinAndSelect('cars.brand', 'brand.id');
+      const queryBuilder = this.repository.createQueryBuilder('cars');
 
       const car = await queryBuilder.where('cars.id = :id', { id }).getOne();
 
@@ -103,9 +100,7 @@ export class UserCarsService {
   public async requestCarRental(payload: requestOrderCarRentalDto) {
     const { car_id } = payload;
     try {
-      const queryBuilder = this.repository
-        .createQueryBuilder('cars')
-        .leftJoinAndSelect('cars.brand', 'brand.id');
+      const queryBuilder = this.repository.createQueryBuilder('cars');
 
       const car = await queryBuilder
         .where('cars.id = :id', { id: car_id })
@@ -115,7 +110,7 @@ export class UserCarsService {
       }
 
       this.mailService.sendOrderCarRentalToOwner({
-        car_name: `${car.brand.brand_name} ${car.car_name}`,
+        car_name: ` ${car.car_name}`,
         name: payload.name,
         email: payload.email,
         country_of_origin: payload.country_of_origin ?? '-',
@@ -132,7 +127,7 @@ export class UserCarsService {
       });
 
       this.mailService.sendConfirmationCarBookingToCustomer({
-        car_name: `${car.brand.brand_name} ${car.car_name}`,
+        car_name: car.car_name,
         name: payload.name,
         email: payload.email,
       });

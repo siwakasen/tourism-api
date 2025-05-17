@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "dev": "concurrently \"pnpm start:dev\" \"pnpm start:auth-api:dev\" \"pnpm start:testimonials:dev\" \"pnpm start:drivers:dev\"",
+    "dev": "concurrently \"pnpm start:dev\" \"pnpm start:auth-api:dev\" ",
     "start:dev": "cross-env NODE_ENV=development nest start tour-api --watch",
     "auth:dev": "cross-env NODE_ENV=development nest start authr-api --watch",
     "watch:public": "chokidar 'apps/tour-api/public/**/*' -c 'cp -R apps/tour-api/public dist/apps/tour-api/'",
@@ -22,9 +22,6 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/tourweb_be/test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs",
-    "start:testimonials:dev": "cross-env NODE_ENV=development nest start testimonials --watch",
-    "start:drivers:dev": "cross-env NODE_ENV=development nest start drivers --watch",
-    "start:debug-testimonials:dev": "cross-env NODE_ENV=development nest start testimonials --debug --watch",
     "start:tour-api:dev": "cross-env NODE_ENV=development nest start tour-api --watch",
     "start:debug-tour:dev": "cross-env NODE_ENV=development nest start tour-api --debug --watch",
     "start:tour-api:staging": "cross-env NODE_ENV=staging nest start tour-api --watch",
@@ -40,11 +37,7 @@
     "build:auth-api": "nest build auth-api",
     "build:auth-api:prod": "cross-env NODE_ENV=production nest build auth-api",
     "build:tour-api": "nest build tour-api",
-    "build:tour-api:prod": "cross-env NODE_ENV=production nest build tour-api",
-    "build:testimonials": "nest build testimonials",
-    "build:testimonials:prod": "cross-env NODE_ENV=production nest build testimonials",
-    "build:drivers": "nest build drivers",
-    "build:drivers:prod": "cross-env NODE_ENV=production nest build drivers"
+    "build:tour-api:prod": "cross-env NODE_ENV=production nest build tour-api"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
