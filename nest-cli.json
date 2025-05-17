@@ -48,36 +48,6 @@
       "compilerOptions": {
         "tsConfigPath": "libs/entities/tsconfig.lib.json"
       }
-    },
-    "testimonials": {
-      "type": "application",
-      "root": "apps/testimonials/src",
-      "entryFile": "main",
-      "sourceRoot": "apps/testimonials/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/testimonials/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "common/envs/*.env",
-            "outDir": "dist/apps/testimonials/src/common/helper"
-          }
-        ]
-      }
-    },
-    "drivers": {
-      "type": "application",
-      "root": "apps/drivers/src",
-      "entryFile": "main",
-      "sourceRoot": "apps/drivers/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/drivers/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "common/envs/*.env",
-            "outDir": "dist/apps/drivers/src/common/helper"
-          }
-        ]
-      }
     }
   }
 }
