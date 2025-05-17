@@ -24,7 +24,7 @@ async function bootstrap() {
       options: {
         url: `0.0.0.0:${gRPCPort}`,
         package: 'auth',
-        protoPath: 'contract/auth-service.proto',
+        protoPath: 'contract/auth-api.proto',
       },
     },
   );

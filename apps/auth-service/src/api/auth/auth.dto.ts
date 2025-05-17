@@ -4,11 +4,11 @@ import { IsString } from 'class-validator';
 import { Admin } from 'libs/entities/tour_admin/admin.entity';
 
 export class LoginReqDto {
-  @ApiProperty()
+  @ApiProperty({ default: 'test@gmail.com' })
   @IsEmail()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'Password123!' })
   @IsString()
   password: string;
 }

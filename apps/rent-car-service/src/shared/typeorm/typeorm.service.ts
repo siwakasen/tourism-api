@@ -22,7 +22,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       logger: 'advanced-console',
       //   logging: ['query', 'error'],
       logging: ['error'],
-      synchronize: false,
+      synchronize: true, // NEVER USE TRUE IN PRODUCTION
     };
   }
 }

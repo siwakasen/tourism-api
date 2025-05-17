@@ -33,7 +33,7 @@ import { MailService } from '@app/helpers/mail/mail.service';
           transport: Transport.GRPC,
           options: {
             package: 'auth',
-            protoPath: 'contract/auth-service.proto', // Ensure this path is correct
+            protoPath: 'contract/auth-api.proto', // Ensure this path is correct
             url: config.get<string>('AUTH_SERVICE'),
           },
         }),
