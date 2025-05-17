@@ -22,13 +22,13 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addServer(`http://localhost:${port}`)
-    .addServer(`https://tour.cashtrack.my.id`)
+    .addServer(`https://tour-package.vulpbox.com`)
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(port, () => {
-    console.log('[Tourism Service]', `http://localhost:${port}`);
+    console.log('[Tour Package Service]', `http://localhost:${port}`);
   });
 }
 
